@@ -11,6 +11,10 @@ before_install:
   - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   - sudo dpkg -i google-chrome*.deb
   - sh -e /etc/init.d/xvfb start
+
+before_deploy:
+  - npm run webpack
+
 deploy:
   provider: heroku
   app:
@@ -21,3 +25,5 @@ deploy:
       secure: ihwgdLM6k8XQv832GQn6hjUqTYrbzP3AKdCY0rRl7/0DNgMo4tZk+W4yxAwvSDfrKblpKtQAG3B2p8zCh04VNeEePLol5gkPRwBQ8uYX9fcS0AlKAvBWQNOz9R73xWKieIOm3RJjboNCeVOVLAiRNHJ6eEvd0ygZ5JqavXFCio3X3tB0mXFCX4bHmrYySOACIBxlVZ4FopPWPTfFnxZdTlc1PfcMkzwX5ODHv8AXkTd0eZL5Pbk+wtBIxrD6+IhQZ4DoQGHquaNGpXU4KonXc6NIUrB0H5mYeNALOtLOw4pfwcx3ncLSJ5lJcwFpb8xzhgzXOXAPaTmzke29qL8nQ0d8dxBmLYBnzRba3GMnEfuu4noVIZfmwu6qDWcepgFmndiZ57Ayq+AMmyMdXckvHKDL7XzLuEEGrojeagefS8BVV8BF53W/Reypo/h+TGGV4CojdhUaM+RbfGmqf+KFDhduZTxZ2JIcR96cCOmWa2Q6VSfl6ALQ1VXJO5loLKN3gZ+NQZj77oVt6rqZxBNUZ+hbfXKwZ6lJyKcBsX2B30TzWoQtAMLAejsfxA0ruJs6tRD4x8/EujqGUfb62CGs69c04Qi3YrkmfGCNv94NTA/yiGo1LzZU6SgL5rac8YGLFz6qxkFTAmTOBZogRT4NXYZEJh90TV7EWwErwyS1v/A=
     development:
       secure: acaA2sLtB5NX+DqcTkmN5vzj/jk61H78ASCuBadJ79fsDkHE9es9qBBOyUJ/35jq4T0i4jLi65gIFcWn9zPiHIhYlC69OQ1Lrtu3qW8cQ82/2Tv4qwMa+upkTofpTjbI2calVN1H0xUQxa0k31xD6XJSQLd0Rw2Paafg6IcZE57CuR9xj5/AGL40FVsiVE+4ZOw6+LIW+A2dFnjm8zHvjqAyVo8wmsM9yrIatFPFafkbF65KclnCnMAiv96zFZY7B8NmSEcevLjAnQuBa8IEmojh1IssJNztj8fOWDwWw+Ur/PLN20iiKpX5UlJHZpfH6HEz2u2CHHOhvDH/+IU3cC6ukrC3ncRZ1cYl398XNTlfqahNuuMFXUvR81+einI/Xtst/Squ4kdVyxMuj7Uub6HlRUubXWdB4iLrfDCMmk0mUfakSAcRIAzr0bso1hvR91r4cvc+UNdnnfO6hA5ucDtAmOyJIXFOIoIaxzClxPAEZOMivDkWKTMUUE4Cf6WF2tJaMvKrz/lWnag7LBos2DGbTCNR9AbX31o4eQ3kUhRLenB4bOXDlt3GOFSbZHvOThSo3ZoC+RM20mcrbD6UhToTOj0WrHxhDHGN82Hi6xWDlt0wtWnCJvEnT2JQBRgUn4GGOjXeiZm+R1Z0/CmzEj+dtvfRHAMnHEXw2kPTIXY=
+
+skip_cleanup: true

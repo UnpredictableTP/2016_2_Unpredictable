@@ -35,25 +35,8 @@ export default class AppForm extends Form {
 		this.append(this._logoutButton._get());
 	}
 
-
-	// TODO комментарии в стиле JSDoc
-
-	/**
-	 * Обработчик кнопки Логаута
-	 * @param callback - функция, вызываемая при нажатии
-	 * @param options - модель юзера
-	 */
 	onLogout(callback, options = {}) {
-		this._logoutButton.on('click', function (e) {
-			e.preventDefault();
-			const model = new User();
-			const res = model.logout(options.info.sessionid);
-			if (res) {
-				res.then(function () {
-					callback();
-				}).catch();
-			}
-		});
+		// TODO !!!!!
 	}
 }
 

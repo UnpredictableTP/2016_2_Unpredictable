@@ -2,7 +2,7 @@ node_modules/
 *.pid
 *.out
 *.log
-*.tmpl.js
+#*.tmpl.js
 .idea/
 .DS_Store
 public/api/

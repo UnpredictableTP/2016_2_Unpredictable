@@ -24,7 +24,7 @@ export default class KeyMaster {
 
 	_keyHandler(action, event) {
 		console.log(action, event);
-		let key = event.key;
+		const key = event.key;
 		this.keys[key] = action === 'down';
 	}
 }

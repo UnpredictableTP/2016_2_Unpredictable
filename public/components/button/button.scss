@@ -1,14 +1,16 @@
 .button {
-	padding: 0 15px ;
+	text-decoration: none;
 	background-color: #FFD700;
 	border: .1rem solid grey;
 	border-radius: .4rem;
 	color: grey;
-	cursor: pointer;
-	height: 50px;
+	height: 7vh;
 	text-align: center;
-	margin-right:40px;
 	outline: none;
-	margin-bottom: 3vh;
-	min-width: 40px;
+	cursor: pointer;
+	width: 20vw;
+	font-family: 'Comic Sans MS', cursive;
+	display: block;
+	margin: 1vw auto auto;
+	padding-top: 2vh;
 }

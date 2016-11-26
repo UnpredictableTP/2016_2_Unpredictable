@@ -10,7 +10,12 @@ body {
 	h1, h2 {
 		text-align: center;
 	}
+
+	button {
+		font-size: x-large;
+	}
 }
+
 @keyframes fadeInDown {
 	from {
 		opacity: 0;
@@ -39,9 +44,7 @@ body {
 	}
 }
 
-.js-sign, .js-app, .js-reg, .js-score, .js-main, .js-play, h1{
-	//transition: opacity 0.3s;
-	//background-color: red;
+.js-app, .js-score, .js-main, .js-play, .js-group{
 	animation-duration: 0.5s;
 	animation-fill-mode: both;
 	position: absolute;
@@ -49,6 +52,20 @@ body {
 	left: 0;
 	padding-top: 10vh;
 	width: 100%;
+}
+
+
+.js-sign {
+	position: absolute;
+	left: 0;
+	padding: 10px;
+	width:50%;
+}
+
+.js-reg {
+	position: absolute;
+	right: 0;
+	width: 50%;
 }
 
 .js-play {

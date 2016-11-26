@@ -5,7 +5,7 @@
                 <fest:value>params.login</fest:value>
             </div>
             <div class="record__score">
-                <fest:value>params.max_score</fest:value>
+                <fest:value>params.score</fest:value>
             </div>
         </fest:if>
     </fest:set>

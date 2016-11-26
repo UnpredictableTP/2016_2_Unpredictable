@@ -4,12 +4,13 @@
             <div class="scoreboard__title">
                 Scoreboard
             </div>
+            <div class="scoreboard__username">
+                Username
+            </div>
+            <div class="scoreboard__score">
+                Score
+            </div>
             <div class="scoreboard__table">
-                <fest:get name="record">{
-                    username: "Username",
-                    score: "Score",
-                    }
-                </fest:get>
                 <fest:for from="0" to="10" index="i">
                     <fest:get name="record">data.items[i]</fest:get>
                 </fest:for>

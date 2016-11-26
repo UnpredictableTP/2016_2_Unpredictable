@@ -6,10 +6,15 @@ export default class UsersCollection {
 		this._data = [];
 	}
 
+	setHost(host) {
+		this.host = host;
+	}
+
 	fetchUsers() {
 		console.log('fetchUsers() {');
 		return new Promise(function (resolve, reject) {
-			fetch('https://nameless-wildwood-32323.herokuapp.com/api/scoreboard?limit=10', {
+			// 'https://nameless-wildwood-32323.herokuapp.com/api/scoreboard?limit=10'
+			fetch(this.host + 'api/users', {
 				method: 'GET',
 				mode: 'cors',
 				headers: {

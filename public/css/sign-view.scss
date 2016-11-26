@@ -1,0 +1,83 @@
+.sign {
+
+	&__header {
+
+	}
+
+	&__body {
+
+		.clearfix {
+			clear: both;
+		}
+	}
+
+	&__signin {
+		display: inline-block;
+		width: 45%;
+		float: left;
+		padding-left: 4%;
+	}
+
+	&__signup {
+		display: inline-block;
+		width: 49%;
+		float: right;
+	}
+
+	&__back-link {
+
+		a {
+			height: 5vh;
+			padding-top: 1vh;
+			width: 10vw;
+		}
+	}
+
+	.signin {
+
+		&__header {
+
+		}
+
+		&__login-input {
+
+		}
+
+		&__password-input {
+
+		}
+
+		&__submit {
+			height: 7vh;
+			padding-top: 1vh;
+			width: 10vw;
+			font-size: x-large;
+		}
+	}
+
+	.signup {
+
+		&__header {
+
+		}
+
+		&__login-input {
+
+		}
+
+		&__password-input {
+
+		}
+
+		&__password-repeat {
+
+		}
+
+		&__submit {
+			height: 7vh;
+			padding-top: 1vh;
+			width: 10vw;
+			font-size: x-large;
+		}
+	}
+}

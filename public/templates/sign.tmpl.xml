@@ -1,0 +1,32 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="data">
+
+    <div class="sign">
+        <h1 class="sign__header">TechnoOsmos</h1>
+        <div class="sign__body">
+
+            <div class="sign__signin signin">
+                <h3 class="signin__header">Sign in</h3>
+                <input type="text" name="login" placeholder="Введите свой логин" class="signin__login-input input"/>
+                <input type="password" name="password" placeholder="Введите свой пароль" class="signin__password-input input"/>
+                <button class="signin__submit button">Sign in!</button>
+            </div>
+
+
+            <div class="sign__signup signup">
+                <h3 class="signup__header">Sign up</h3>
+                <input type="text" name="login" placeholder="Введите свой логин" class="signup__login-input input"/>
+                <input type="password" name="password1" placeholder="Введите свой пароль" class="signup__password-input input"/>
+                <input type="password" name="password2" placeholder="Повторите свой пароль" class="signup__password-repeat input"/>
+                <button class="signup__submit button">Sign up!</button>
+            </div>
+
+            <div class="clearfix"></div>
+
+        </div>
+
+        <div class="sign__back-link">
+            <a href="back">BACK</a>
+        </div>
+    </div>
+
+</fest:template>

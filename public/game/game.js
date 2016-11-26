@@ -30,12 +30,11 @@ export default class Game {
 			ball6: this.ball6,
 			ball7: this.ball7,
 			ball8: this.ball8,
-
-		}
+		};
 	}
 
 	start() {
-		for (let ball in this.balls) {
+		for (const ball in this.balls) {
 			this.balls[ball].draw(this.ctx);
 		}
 		this.balls.ball1.dv({vx: 0, vy: 0});
@@ -51,8 +50,8 @@ export default class Game {
 
 	animate() {
 		let date = Date.now();
-		let doAnimate = () => {
-			let localDate = Date.now();
+		const doAnimate = () => {
+			const localDate = Date.now();
 			this.clear();
 
 			for (let ball in this.balls) {
@@ -70,7 +69,7 @@ export default class Game {
 			requestAnimationFrame(doAnimate);
 		};
 
-		doAnimate()
+		doAnimate();
 	}
 
 	// checkRectEach() {
@@ -102,9 +101,9 @@ export default class Game {
 	// };
 
 	checkRectEach() {
-		for (let ball in this.balls) {
+		for (const ball in this.balls) {
 			if (ball !== this.balls.ball1) {
-				let coordinates = this.balls[ball].getCoordinates();
+				const coordinates = this.balls[ball].getCoordinates();
 				let deleted = false;
 				if (this.balls.ball1.countDistanceXY(coordinates)) {
 					if (this.balls.ball1.compareR(coordinates)) {
@@ -126,7 +125,7 @@ export default class Game {
 				}
 			}
 		}
-	};
+	}
 
 	doKeys() {
 		if (this.key.is('w')) {

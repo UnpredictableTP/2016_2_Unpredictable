@@ -42,7 +42,7 @@ export default class Ball {
 	}
 
 	checkRectBorder(rect, action) {
-		let result = {
+		const result = {
 			x: false,
 			y: false
 		};
@@ -85,9 +85,9 @@ export default class Ball {
 	}
 
 	countDistanceXY(ball1) {
-		let dxy = (Math.sqrt((this.x - ball1.x) * (this.x - ball1.x) +
+		const dxy = (Math.sqrt((this.x - ball1.x) * (this.x - ball1.x) +
 				(this.y - ball1.y) * (this.y - ball1.y))) | 0;
-		let dr = this.r + ball1.r;
+		const dr = this.r + ball1.r;
 		return dxy < dr;
 	}
 
@@ -108,7 +108,7 @@ export default class Ball {
 			x: this.x,
 			y: this.y,
 			r: this.r
-		}
+		};
 	}
 
 }
