@@ -26,5 +26,6 @@ export default class MainForm extends Form {
 		this.append(this._authorization._get());
 		this.append(this._singleplayer._get());
 		this.append(this._score._get());
+
 	}
 }

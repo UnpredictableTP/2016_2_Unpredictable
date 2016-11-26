@@ -2,6 +2,7 @@
 
 import View from '../modules/view';
 import MainForm from '../components/mainForm/mainForm';
+import swLoader from '../modules/swLoader';
 
 
 export default class MainView extends View {
@@ -11,7 +12,9 @@ export default class MainView extends View {
 	}
 
 	init() {
+
 		this.mainForm = new MainForm();
+		// this.sw = new swLoader();
 		this.mainForm.renderTo(this.getElement());
 	}
 }

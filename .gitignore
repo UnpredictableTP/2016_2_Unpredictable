@@ -8,3 +8,4 @@ node_modules/
 public/api/
 public/coverage/
 /dist/
+/node_modules/

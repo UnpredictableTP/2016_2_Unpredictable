@@ -1,162 +1,139 @@
 'use strict';
 
+import Model from '../modules/model';
 
-export default class User {
-	constructor() {
-		this.info = {
-			login: null,
-			score: null
+export default class User extends Model {
+
+	constructor(body = {}, attributes = {}) {
+		super(attributes);
+		this.body = body;
+	}
+
+	validateLogin(login) {
+		if (!login || login.length === 0) {
+			return {
+				errorText: 'Логин не должен быть пустым',
+			};
+		}
+		if (!login.match(/^[a-zA-Z0-9]{1,20}$/)) {
+			return {
+				errorText: 'Логин должен состоять из латинских букв или цифр и иметь длину не более 20 символов',
+			};
+		}
+		return {};
+	}
+
+	validatePassword(password, repeat = null) {
+		if (!password || password.length === 0) {
+			return {
+				errorText: 'Пароль не должен быть пустым',
+			};
+		}
+		if (!password.match(/^[a-z0-9]{6,20}$/i)) {
+			return {
+				errorText: 'Пароль должен состоять из латинских букв или цифр и иметь длину от 6 до 20 символов',
+			};
+		}
+		return {};
+	}
+
+	checkRepeat(password, repeat = null) {
+		if (repeat && repeat !== password) {
+			return {
+				errorText: 'Пароли не совпадают',
+			};
+		}
+		return {};
+	}
+
+	validate() {
+		const isLoginValid = this.validateLogin(this.info.login);
+		const isPasswordValid = this.validatePassword(this.info.password);
+		const isRepeat = this.checkRepeat(this.info.password, this.info.repeat);
+		this._errorText = {};
+		this.error = false;
+		if (isLoginValid.errorText) {
+			this.error = true;
+			this._errorText._errorTextLogin = isLoginValid.errorText;
+		}
+		if (isPasswordValid.errorText) {
+			this.error = true;
+			console.log(this._errorText);
+			this._errorText._errorTextPassword = isPasswordValid.errorText;
+		}
+		if (isRepeat.errorText) {
+			this.error = true;
+			this._errorText._errorRepeatPassword = isRepeat.errorText;
+		}
+	}
+
+	signin(callback, options, errors) {
+		this.validate();
+		if (this.error) {
+			for (let key in this._errorText) {
+				errors[key]._get().innerText = this._errorText[key];
+			}
+			return {};
+		}
+		let params = {
+			attrs: ['userId', 'sessionid'],
+			body: this.info,
+			oneMore: false,
+			func: 'signin'
 		};
-	}
-
-	signin({login, password}) {
-		console.log('sign in', arguments);
-		return new Promise(function (resolve, reject) {
-			if (!login) {
-				console.info('плохое имя');
-				return reject();
-			}
-			if (!password || password.length < 6) {
-				console.info('плохое passw');
-				return reject();
-			}
-			fetch(this.host + 'api/login', {
-				credentials: 'include',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				method: 'POST',
-				body: JSON.stringify({login, password}),
-				mode: 'cors'
-			}).then(res => {
-				if (res.status !== 200) {
-					console.info('не верная пара');
-					return reject();
-				}
-				return res.json().then(body => {
-					this.login = body.login;
-					this.score = body.score;
-					console.info('вошли');
-					return resolve();
-				});
-			}).catch(err => {
-				console.error(err);
-				console.info('какаято ошибка =((( ');
-				return reject(err);
+		let url = 'api/sessions';
+		return this.save(url, params)
+			.then(() => {
+				callback();
+			}).catch(() => {
+				errors._errorText._get().innerText = this._errorTextServer;
+				return {};
 			});
-		}.bind(this));
 	}
 
-	signup({login, password, passwordRepeat}) {
-		console.log('sign up', arguments);
-		return new Promise(function (resolve, reject) {
-			if (!login) {
-				console.info('плохое имя');
-				return reject();
+	signup(callback, options, errors) {
+		this.validate();
+		if (this.error) {
+			for (let key in this._errorText) {
+				errors[key]._get().innerText = this._errorText[key];
 			}
-			if (!password || password.length < 6) {
-				console.info('плохой пароль');
-				return reject();
-			}
-			if (passwordRepeat !== password) {
-				console.info('пароли не совпадают ');
-				return reject();
-			}
-			fetch(this.host + 'api/users', {
-				credentials: 'include',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				method: 'POST',
-				body: JSON.stringify({login, password}),
-				mode: 'cors'
-			}).then(res => {
-				if (res.status !== 200) {
-					console.info('пользователь уже существует или какая то хрень');
-					return reject();
-				}
-				return res.json().then(body => {
-					this.login = body.login;
-					this.score = body.score;
-					console.info('зарегались');
-					return resolve();
-				});
-			}).catch(err => {
-				console.error(err);
-				console.info('какаято ошибка =((( ');
-				return reject(err);
+			return {};
+		}
+		let params = {
+			attrs: ['userid'],
+			body: this.info,
+			oneMore: true,
+			func: 'signup'
+		};
+		let url = 'api/users';
+		return this.save(url, params)
+			.then(() => {
+				callback();
+			}).catch(() => {
+				errors._errorText._get().innerText = this._errorTextServer;
+				return {};
 			});
-		}.bind(this));
+
 	}
 
-	logout() {
-		return new Promise(function (resolve, reject) {
-			fetch(this.host + 'api/delete', {
-				credentials: 'include',
-				method: 'DELETE',
-				mode: 'cors'
-			}).then(res => {
-				if (res.status !== 200) {
-					console.info('не разлогинились');
-					return reject();
-				}
-				return res.json().then(body => {
-					console.info('Разлогинились');
-					return resolve();
-				});
-			}).catch(err => {
-				console.error(err);
-				console.info('какаято ошибка');
-				return reject(err);
-			});
-		}.bind(this));
+	chec(){
+		return this.check('api/auth');
 	}
 
-	get login() {
+	logout(sessionid) {
+		return this.deleteInfo(sessionid);
+	}
+
+	setUserInfo(newInfo) {
+		this.info = newInfo;
+	}
+
+	clear() {
+		this.info = {};
+	}
+
+	getLogin() {
 		return this.info.login;
-	}
-
-	get score() {
-		return this.info.score;
-	}
-
-	set score(value) {
-		this.info.score = value;
-	}
-
-	set login(value) {
-		this.info.login = value;
-	}
-
-	checkAutorization() {
-		return new Promise(function (resolve, reject) {
-			fetch(this.host + 'api/me', {
-				credentials: 'include',
-				method: 'GET',
-				mode: 'cors'
-			}).then(res => {
-				if (res.status !== 200) {
-					console.info('МЫ не авторизованы!! meh =(');
-					return reject();
-				}
-				return res.json().then(body => {
-					this.login = body.login;
-					this.score = body.score;
-					console.info('МЫ авторизованы!! УХУ');
-					return resolve();
-				});
-			}).catch(err => {
-				console.error(err);
-				console.info('МЫ не авторизованы!! какаято ошибка =((( meh =(');
-				return reject(err);
-			});
-		}.bind(this));
-	}
-
-	setHost(host) {
-		this.host = host;
 	}
 
 }
