@@ -116,7 +116,7 @@ export default class User extends Model {
 
 	}
 
-	check(){
+	chec(){
 		return this.check('api/auth');
 	}
 

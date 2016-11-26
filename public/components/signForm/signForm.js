@@ -6,7 +6,6 @@ import Button from '../button/button';
 import Block from '../block/block';
 import User from '../../models/UserModel';
 import Link from '../link/link';
-import './signForm.scss';
 
 
 export default class SignForm extends Form {

@@ -14,7 +14,7 @@ export default class MainView extends View {
 	init() {
 
 		this.mainForm = new MainForm();
-		this.sw = new swLoader();
+		// this.sw = new swLoader();
 		this.mainForm.renderTo(this.getElement());
 	}
 }
