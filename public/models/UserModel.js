@@ -1,8 +1,11 @@
 'use strict';
 
+import Model from '../modules/model';
 
-export default class User {
+export default class User extends Model {
+
 	constructor(body = {}, attributes = {}) {
+		super(attributes);
 		this.body = body;
 	}
 
@@ -31,6 +34,10 @@ export default class User {
 				errorText: 'Пароль должен состоять из латинских букв или цифр и иметь длину от 6 до 20 символов',
 			};
 		}
+		return {};
+	}
+
+	checkRepeat(password, repeat = null) {
 		if (repeat && repeat !== password) {
 			return {
 				errorText: 'Пароли не совпадают',
@@ -41,63 +48,76 @@ export default class User {
 
 	validate() {
 		const isLoginValid = this.validateLogin(this.info.login);
-		const isPasswordValid = this.validatePassword(this.info.password,
-			this.info.repeatPassword);
-		let error = false;
+		const isPasswordValid = this.validatePassword(this.info.password);
+		const isRepeat = this.checkRepeat(this.info.password, this.info.repeat);
+		this._errorText = {};
+		this.error = false;
 		if (isLoginValid.errorText) {
-			error = true;
+			this.error = true;
 			this._errorText._errorTextLogin = isLoginValid.errorText;
 		}
 		if (isPasswordValid.errorText) {
-			error = true;
+			this.error = true;
+			console.log(this._errorText);
 			this._errorText._errorTextPassword = isPasswordValid.errorText;
 		}
-		return error;
+		if (isRepeat.errorText) {
+			this.error = true;
+			this._errorText._errorRepeatPassword = isRepeat.errorText;
+		}
 	}
 
-	signin() {
-		const validation = this.validate();
-		if (validation.error) {
-			this._errorText = {};
-			for (const key in validation) {
-				if (key !== 'error') {
-					this._errorText[key] = validation[key];
-				}
+	signin(callback, options, errors) {
+		this.validate();
+		if (this.error) {
+			for (let key in this._errorText) {
+				errors[key]._get().innerText = this._errorText[key];
 			}
-			return;
+			return {};
 		}
-		const params = {
+		let params = {
 			attrs: ['userId', 'sessionid'],
-			body: this.body,
+			body: this.info,
 			oneMore: false,
 			func: 'signin'
 		};
-		const url = 'api/sessions';
-		return this.save(url, params);
+		let url = 'api/sessions';
+		return this.save(url, params)
+			.then(() => {
+				callback();
+			}).catch(() => {
+				errors._errorText._get().innerText = this._errorTextServer;
+				return {};
+			});
 	}
 
-	signup() {
-		const validation = this.validate();
-		if (validation.error) {
-			this._errorText = {};
-			for (const key in validation) {
-				if (key !== 'error') {
-					this._errorText[key] = validation[key];
-				}
+	signup(callback, options, errors) {
+		this.validate();
+		if (this.error) {
+			for (let key in this._errorText) {
+				errors[key]._get().innerText = this._errorText[key];
 			}
-			return;
-		} else {
-			this._errorText = null;
+			return {};
 		}
-		const params = {
+		let params = {
 			attrs: ['userid'],
 			body: this.info,
 			oneMore: true,
 			func: 'signup'
 		};
-		const url = 'api/users';
-		return this.save(url, params);
+		let url = 'api/users';
+		return this.save(url, params)
+			.then(() => {
+				callback();
+			}).catch(() => {
+				errors._errorText._get().innerText = this._errorTextServer;
+				return {};
+			});
 
+	}
+
+	check(){
+		return this.check('api/auth');
 	}
 
 	logout(sessionid) {

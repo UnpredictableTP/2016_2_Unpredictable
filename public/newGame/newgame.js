@@ -5,13 +5,14 @@ import Ball from "./ball";
 import Camera from "./camera";
 import KeyMaster from "./keymaster";
 import Light from "./light";
-import Socket from "../models/socketModel";
+// import Socket from "../models/socketModel";
+import pointerLock from "./pointerLock"
 var THREE = THREELib(); // return THREE JS
 
 export default class DGame {
 	constructor() {
 		this.width = 1200;
-		this.height = 600;
+		this.height = 800;
 
 		/*this.socket = new Socket();
 		 this.key
@@ -19,7 +20,6 @@ export default class DGame {
 		 */
 		this.players = [];
 		this.dots = [];
-		this.oldPosition = 0;
 
 		this.key = new KeyMaster();
 		this.key.init();
@@ -27,49 +27,16 @@ export default class DGame {
 		this.rendrer = new THREE.WebGLRenderer({antialias: true});
 		this.rendrer.setSize(this.width, this.height);
 
-		this.lockChangeAlert = this.lockChangeAlert.bind(this);
 	}
 
-	lockChangeAlert() {
-		console.log(document.pointerLockElement);
-		if (document.pointerLockElement === this.canvas ||
-			document.mozPointerLockElement === this.canvas) {
-			console.log('The pointer lock status is now locked');
-			this.updatePosition = this.updatePosition.bind(this);
-			document.addEventListener("mousemove", this.updatePosition, false);
-		} else {
-			document.removeEventListener("mousemove", this.updatePosition, false);
-		}
-	}
-
-	updatePosition(mousePosition) {
-		let coordinates = this.camera.getPosition();
-		let d = mousePosition.movementX - this.oldPosition;
-		console.log(coordinates);
-		console.log(d);
-		let cameraCoordinates = {
-			x: coordinates.x + d,
-			z: coordinates.z
-		};
-		let ballCoordinates = this.dots[3].getPosition();
-		this.oldPosition = mousePosition.movementX;
-		this.camera.countCircle(ballCoordinates, cameraCoordinates);
-	}
 
 	init(element) {
 		element.appendChild(this.rendrer.domElement);
 
-		this.camera = new Camera({x: 0, y: 200, z: 300});
+		this.camera = new Camera({x: 0, y: 150, z: 300});
 		this.camera.setCamera(this.width, this.height);
 
-		this.canvas = this.rendrer.domElement;
-		this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
-		document.exitPointerLock = document.exitPointerLock || document.mozRequestPointerLock;
-		this.canvas.onclick = () => {
-			this.canvas.requestPointerLock();
-		};
-		document.addEventListener('pointerlockchange', this.lockChangeAlert, false);
-		document.addEventListener('mozpointerlockchange', this.lockChangeAlert, false);
+		this.pointerLock = new pointerLock(this.rendrer, this.camera);
 
 		this.scene = new THREE.Scene();
 
@@ -93,6 +60,8 @@ export default class DGame {
 		this.light = new Light({x: 0, y: 150, z: 100});
 		this.light.setLight(this.scene);
 
+		let calcSpeed = this.calcSpeed.bind(this);
+		document.addEventListener('mouseup', calcSpeed, false);
 		this.rendrer.setClearColor('grey');
 	}
 
@@ -148,6 +117,15 @@ export default class DGame {
 		doAnimate();
 	}
 
+	calcSpeed(event){
+		let coordinates = this.camera.getPosition();
+		let sum = Math.sqrt(coordinates.z ** 2 + coordinates.x ** 2);
+		let Sin = coordinates.x / sum;
+		let Cos = coordinates.z / sum;
+		console.log(Sin, Cos);
+		this.dots[3].changeSpeed(Sin, Cos);
+	}
+
 	doKeys() {
 		if (this.key.is('w') || this.key.is('ц')) {
 			this.dots[3].dvzDecrease();
@@ -161,9 +139,15 @@ export default class DGame {
 		if (this.key.is('d') || this.key.is('в')) {
 			this.dots[3].dvxIncrease();
 		}
-		let coordinates = this.dots[3].getPosition();
-		//this.camera.changePosition({x: coordinates.x, y: coordinates.y + 100, z:coordinates.z + 200 });
-		this.light.changePosition({x: coordinates.x, y: coordinates.y + 200, z: coordinates.z + 200});
+		let coordinates = this.camera.getPosition();
+		let ballCoordinates = this.dots[3].getPosition();
+		let newCoor = {
+			x: coordinates.x + ballCoordinates.x,
+			y: coordinates.y + ballCoordinates.y,
+			z: coordinates.z + ballCoordinates.z
+		};
+		this.camera.changePosition(newCoor);
+		this.light.changePosition(newCoor);
 	}
 
 	checkR() {

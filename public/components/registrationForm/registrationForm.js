@@ -90,47 +90,29 @@ export default class RegistrationForm extends Form {
 		this.append(this._errorText._get());
 		this.append(this._regButton._get());
 		this.errors = {
-			logError: this._errorTextLogin,
-			passError: this._errorTextPassword,
-			repeatError: this._errorTextRepeat,
-			commonError: this._errorText
+			_errorTextLogin: this._errorTextLogin,
+			_errorTextPassword: this._errorTextPassword,
+			_errorRepeatPassword: this._errorTextRepeat,
+			_errorText: this._errorText
 		};
 	}
 
 	onRegistration(callback, options = {}) {
-		this._regButton.on('click', function (button) {
+		this._regButton.on('click', (button) => {
 			button.preventDefault();
 			const body = {
 				login: this._inputLogin.getValue(),
 				email: this._inputName.getValue(),
 				// name : this._inputName.getValue(),
-				password: this._inputName.getValue()
+				password: this._inputPassword.getValue(),
+				repeat: this._inputRepeatPassword.getValue()
 			};
+			console.log(body);
 			options.setUserInfo(body);
-			const res = options.signup();
-			for (const key in this.errors) {
-				this.errors[key]._get().innerText = '';
-			}
-			if (options.getError()) {
-				const errors = options.getError();
-				for (const key in errors) {
-					this[key]._get().innerText = errors[key];
-				}
-			} else if (res) {
-				res.then(function () {
-					callback();
-				}).catch(console.error);
-			}
-		}.bind(this));
-		// options.clearErrors();
-	}
-
-	onBack(callback, options = {}) {
-		this._backButton.on('click', function (button) {
-			button.preventDefault();
-			// options.clearErrors();
-			callback();
-		});
+			options.clearErrors();
+			this.clearInputErrors();
+			const result = options.signup(callback, options, this.errors);
+		})
 	}
 
 	clearInputErrors() {

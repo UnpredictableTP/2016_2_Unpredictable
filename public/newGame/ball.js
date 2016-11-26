@@ -48,6 +48,12 @@ export default class Ball {
 		//console.log({x: this.x, y: this.y, z: this.z});
 	}
 
+	changeSpeed(Sin, Cos){
+		this.vx = -1 * ((80 * Sin) | 0);
+		this.vz = -1 * ((80 * Cos) | 0);
+		console.log(this.vx, this.vz);
+	}
+
 	dvzIncrease() {
 		if (this.vz <= 100) {
 			this.vz += 6;
@@ -64,10 +70,12 @@ export default class Ball {
 	}
 
 	dvxIncrease() {
+		console.log('lolol');
 		if (this.vx <= 100) {
 			this.vx += 6;
 			this.objectmesh.rotation.x = 10;
 		}
+		console.log(this.vx);
 	}
 
 	dvxDecrease() {

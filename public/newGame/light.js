@@ -11,7 +11,7 @@ export default class Light{
 	}
 
 	setLight(scene) {
-		this.light = new THREE.PointLight(0xffffff, 5, 700);
+		this.light = new THREE.PointLight(0xffffff, 5, 1500);
 		this.light.position.set(this.x, this.y, this.z);
 		scene.add(this.light);
 	}

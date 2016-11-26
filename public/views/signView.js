@@ -8,32 +8,46 @@ import Block from '../components/block/block';
 
 
 export default class SignView extends View {
-	constructor(tag, {user}) {
+	constructor() {
 		super('js-group');
-		this._user = user;
-		this.signForm = new SignForm(this._user);
-		this.signForm._get().classList.add('js-sign__form');
-		this.registrationForm = new RegistrationForm(this._user);
-		this.registrationForm._get().classList.add('js-reg__form');
-		this._header = new Block('h1', {
+		this.signForm = new SignForm();
+		this.signForm._get().classList.add('js-sign');
+		this.regForm = new RegistrationForm();
+		this.regForm._get().classList.add('js-reg');
+	}
+
+	/**
+	 * Инициализация вьюшки
+	 * @param model - модкль юзера
+	 */
+	init(model = {}) {
+		this.user = model.user;
+		this._header2 = new Block('h1', {
 			attrs: {
 				class: 'header'
 			}
 		});
-		this._header._get().innerText = `TechnoOsmos`;
+		this._header2._get().innerText = `TechnoOsmos`;
+		this.signForm.onSignin(this.showAppForm.bind(this), this.user);
+		this.regForm.onRegistration(this.showAppForm.bind(this), this.user);
+		this.getElement().appendChild(this._header2._get());
+		this.signForm.renderTo(this.getElement());
+		this.regForm.renderTo(this.getElement());
 		this._back = new Link('Go Back', {attrs: {href: 'back'}});
-	}
-
-	init() {
-		this.signForm.onSignin(this.showAppForm.bind(this));
-		this.registrationForm.onRegistration(this.showAppForm.bind(this));
-		this._header.renderTo(this.getElement());
-		this.signForm.renderTo(document.querySelector('.js-sign'));
-		this.registrationForm.renderTo(document.querySelector('.js-reg'));
-		this._back.renderTo(this.getElement());
+		this.getElement().appendChild(this._back._get());
 	}
 
 	showAppForm() {
 		return this.router.go('/app');
 	}
+
+	resume(options = {}) {
+		this.show();
+	}
+
+
+	pause() {
+		this.hide();
+	}
+
 }

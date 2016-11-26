@@ -13,6 +13,8 @@ import PlayView from './views/playView';
 const options = {
 	user: new User()
 };
+
+
 const eventListener = function (event) {
 	const el = event.target;
 	if (el.tagName === 'A' && (el.getAttribute('data-nav') || el.getAttribute('href'))) {

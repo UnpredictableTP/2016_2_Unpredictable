@@ -57,46 +57,26 @@ export default class SignForm extends Form {
 		this.append(this._errorText._get());
 		this.append(this._inButton._get());
 		this.errors = {
-			errorTextLogin: this._errorTextLogin,
-			errorTextPassword: this._errorTextPassword
+			_errorTextLogin: this._errorTextLogin,
+			_errorTextPassword: this._errorTextPassword,
+			_errorText: this._errorText
 		};
 	}
 
 	// TODO комментарии в стиле JSDoc
 
-	onSignup(callback, options = {}) {
-		this._upButton.on('click', function (button) {
-			button.preventDefault();
-			// options.clearErrors();
-			callback();
-		});
-	}
-
 	onSignin(callback, options = {}) {
-		this._inButton.on('click', function (e) {
+		this._inButton.on('click', (e) => {
 			e.preventDefault();
 			const body = {
 				login: this._inputLogin.getValue(),
 				password: this._inputPassword.getValue()
 			};
 			options.setUserInfo(body);
-			const result = options.signin();
-			if (options.getError()) {
-				const errors = options.getError();
-				for (const key in errors) {
-					this[key]._get().innerText = errors[key];
-				}
-			} else if (result) {
-				result.then(function () {
-					callback();
-				}).catch(function () {
-					this._errorText._get().innerText = options.getError();
-					return {};
-				}.bind(this));
-			}
-
-		}.bind(this));
-		// options.clearErrors();
+			options.clearErrors();
+			this.clearInputErrors();
+			const result = options.signin(callback, options, this.errors);
+		});
 	}
 
 	clearInputErrors() {
