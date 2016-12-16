@@ -28,9 +28,7 @@ export default class backgroundView extends View {
 		});
 
 		this._background.start();
-
 		window.addEventListener('resize', function () {
-			console.log(this._el.clientWidth, this._el.clientHeight);
 			this.canvas.width = this._el.clientWidth;
 			this.canvas.height = this._el.clientHeight;
 			this._background.setSize(this._el.clientWidth, this._el.clientHeight);
@@ -38,7 +36,6 @@ export default class backgroundView extends View {
 	}
 
 	pause() {
-		this._background.stop();
 		this.canvas.hidden = true;
 	}
 }

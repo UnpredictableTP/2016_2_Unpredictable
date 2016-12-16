@@ -54,7 +54,6 @@ export default class Route {
 	 */
 	leave() {
 		if (this._view) {
-			console.log('Leave', this._view);
 			this._view.pause();
 		}
 	}
