@@ -17,7 +17,7 @@ export default class Ball {
 		this.r = r;
 		this.newR = r;
 		this.canChangeR = true;
-		this.dr = 30;
+		this.dr = 15;
 		this.color = color;
 	}
 
@@ -55,43 +55,52 @@ export default class Ball {
 	}
 
 	changeSpeed(Sin, Cos) {
-		this.vx = -1 * ((100 * Sin) | 0);
-		this.vz = -1 * ((100 * Cos) | 0);
+		this.vx += -1 * ((50 * Sin) | 0);
+		this.vz += -1 * ((50 * Cos) | 0);
 	}
 
 	moveForward(Sin, Cos) {
-		this.vx = -1 * ((40 * Sin) | 0);
-		this.vz = -1 * ((40 * Cos) | 0);
+		if(this.vx >= -20 && this.vy >= -20 && this.vx <= 20 && this.vy <= 20) {
+			this.vx = -1 * ((20 * Sin) | 0);
+			this.vz = -1 * ((20 * Cos) | 0);
+		}
 	}
 
 	moveBackward(Sin, Cos) {
-		this.vx = (40 * Sin) | 0;
-		this.vz = (40 * Cos) | 0;
+		if(this.vx >= -20 && this.vy >= -20 && this.vx <= 20 && this.vy <= 20) {
+			this.vx = (20 * Sin) | 0;
+			this.vz = (20 * Cos) | 0;
+		}
 	}
 
 	moveLeft(Sin, Cos) {
-		this.vx = -1 * ((40 * Cos) | 0);
-		this.vz = (40 * Sin) | 0;
+		if (this.vx >= -20 && this.vy >= -20 && this.vx <= 20 && this.vy <= 20)
+		{
+			this.vx = -1 * ((20 * Cos) | 0);
+			this.vz = (20 * Sin) | 0;
+		}
 	}
 
 	moveRight(Sin, Cos) {
-		this.vx = (40 * Cos) | 0;
-		this.vz = -1 * ((40 * Sin) | 0);
+		if (this.vx >= -20 && this.vy >= -20 && this.vx <= 20 && this.vy <= 20) {
+			this.vx = (20 * Cos) | 0;
+			this.vz = -1 * ((20 * Sin) | 0);
+		}
 	}
 
 	decreaseAll() {
 		if (this.vz !== 0) {
-			if (0 < this.vz && this.vz <= 100) {
-				this.vz -= 1;
-			} else if (0 > this.vz && this.vz >= -100) {
-				this.vz += 1;
+			if (0 < this.vz && this.vz <= 50) {
+				this.vz -= 0.5;
+			} else if (0 > this.vz && this.vz >= -50) {
+				this.vz += 0.5;
 			}
 		}
 		if (this.vx !== 0) {
-			if (0 < this.vx && this.vx <= 100) {
-				this.vx -= 1;
-			} else if (0 > this.vx && this.vx >= -100) {
-				this.vx += 1;
+			if (0 < this.vx && this.vx <= 50) {
+				this.vx -= 0.5;
+			} else if (0 > this.vx && this.vx >= -50) {
+				this.vx += 0.5;
 			}
 		}
 	}

@@ -26,7 +26,7 @@ export default class DGame {
 		element.appendChild(this.rendrer.domElement);
 		this.key.init();
 
-		this.camera = new Camera({x: 0, y: 100, z: 300});
+		this.camera = new Camera({x: 0, y: 100, z: 150});
 		this.camera.setCamera(this.width, this.height);
 
 		this.pointerLock = new pointerLock(this.rendrer, this.camera);
@@ -34,38 +34,38 @@ export default class DGame {
 		this.scene = new THREE.Scene();
 
 		this.dots = [];
-		this.r = 40;
+		this.r = 20;
 		this.plural = 1;
 		this.factor = 0.2;
 		this.player = new Ball({x: 100, y: 0, z: 100, r: this.r, color: 'blue'});
 		this.player.setCamera(this.camera.getCamera());
 		this.player.draw(this.scene);
 
-		let randsphere = new Ball({x: 50, y: 0, z: 100, vx: 40, vz: 30, r: 50, color: 'red'});
+		let randsphere = new Ball({x: 50, y: 0, z: 100, vx: 20, vz: 15, r: 25, color: 'red'});
 		randsphere.draw(this.scene);
 		this.dots.push(randsphere);
-		let randsphere1 = new Ball({x: 150, y: 0, z: 10, r: 10, vx: 50, vz: -30, color: 'green'});
+		let randsphere1 = new Ball({x: 150, y: 0, z: 10, r: 10, vx: 25, vz: -15, color: 'green'});
 		randsphere1.draw(this.scene);
 		this.dots.push(randsphere1);
-		let randsphere2 = new Ball({x: 300, y: 0, z: 150, vx: -30, vz: -40, r: 25, color: 'green'});
+		let randsphere2 = new Ball({x: 300, y: 0, z: 150, vx: -15, vz: -20, r: 12, color: 'green'});
 		randsphere2.draw(this.scene);
 		this.dots.push(randsphere2);
-		let randsphere3 = new Ball({x: -300, y: 0, z: 150, vx: -50, vz: -40, r: 35, color: 'green'});
+		let randsphere3 = new Ball({x: -300, y: 0, z: 150, vx: -25, vz: -20, r: 17, color: 'green'});
 		randsphere3.draw(this.scene);
 		this.dots.push(randsphere3);
-		let randsphere4 = new Ball({x: 300, y: 0, z: -150, vx: -60, vz: -25, r: 25, color: 'red'});
+		let randsphere4 = new Ball({x: 300, y: 0, z: -150, vx: -30, vz: -12, r: 13, color: 'green'});
 		randsphere4.draw(this.scene);
 		this.dots.push(randsphere4);
-		let randsphere5 = new Ball({x: 300, y: 0, z: -150, vx: -30, vz: 30, r: 35, color: 'green'});
+		let randsphere5 = new Ball({x: 300, y: 0, z: -150, vx: -15, vz: 15, r: 17, color: 'green'});
 		randsphere5.draw(this.scene);
 		this.dots.push(randsphere5);
-		let randsphere6 = new Ball({x: 300, y: 0, z: -150, vx: 20, vz: -30, r: 60, color: 'red'});
+		let randsphere6 = new Ball({x: 300, y: 0, z: -150, vx: 10, vz: -15, r: 30, color: 'red'});
 		randsphere6.draw(this.scene);
 		this.dots.push(randsphere6);
-		let randsphere7 = new Ball({x: 350, y: 0, z: -450, vx: 40, vz: -30, r: 15, color: 'green'});
+		let randsphere7 = new Ball({x: 350, y: 0, z: -450, vx: 20, vz: -15, r: 15, color: 'green'});
 		randsphere7.draw(this.scene);
 		this.dots.push(randsphere7);
-		let randsphere8 = new Ball({x: -300, y: 0, z: -150, vx: 60, vz: -30, r: 65, color: 'red'});
+		let randsphere8 = new Ball({x: -300, y: 0, z: -150, vx: 30, vz: -15, r: 30, color: 'red'});
 		randsphere8.draw(this.scene);
 		this.dots.push(randsphere8);
 
@@ -124,7 +124,7 @@ export default class DGame {
 			food.draw(this.scene);
 			food.changeSpeed(-this.Sin, -this.Cos);
 			this.dots.push(food);
-			let r = this.player.getR().r - 3;
+			let r = this.player.getR().r - 5;
 			if(!this.checkExist(r, -1).delete) {
 				this.player = new Ball({x: coor.x, z: coor.z, r: r, color: 'blue'});
 				this.player.draw(this.scene);
@@ -192,7 +192,8 @@ export default class DGame {
 		for (let k = j + 1; k < this.dots.length; ++k) {
 			let newCheckDotR = this.dots[k].getR().r;
 			let newCheckDotCoor = this.dots[k].getPosition();
-			let Distance = (Math.sqrt((checkDotCoor.x - newCheckDotCoor.x) ** 2 + (checkDotCoor.z - newCheckDotCoor.z) ** 2)) | 0;
+			let Distance = (Math.sqrt((checkDotCoor.x - newCheckDotCoor.x) ** 2 +
+					(checkDotCoor.z - newCheckDotCoor.z) ** 2)) | 0;
 			let distR = (newCheckDotR + checkDotR.r) | 0;
 			if (Distance < distR) {
 				this.dots[k].removeFromScene(this.scene);
@@ -201,14 +202,14 @@ export default class DGame {
 				let speed1 = this.dots[k].getSpeed();
 				if (newCheckDotR > checkDotR.r) {
 					if (k === this.dots.length - 1) {
-						if(newCheckDotR > 75){
+						if(newCheckDotR > 50){
 							this.plural *= this.factor;
 						}
 						this.dots[k] = new Ball({
 							x: newCheckDotCoor.x | 0, z: newCheckDotCoor.z | 0, vx: speed1.vx, vz: speed1.vz,
 							r: newCheckDotR + this.plural, color: 'blue'
 						});
-						if(newCheckDotR + 1 - this.r > 15){
+						if(newCheckDotR + 1 - this.r > 10){
 							this.camera.increaseRCam();
 							this.r += 15;
 						}
@@ -228,7 +229,7 @@ export default class DGame {
 						this.dots[j].draw(this.scene);
 					}
 				} else {
-					if(newCheckDotR > 75){
+					if(newCheckDotR > 50){
 						this.plural *= this.factor;
 					}
 					this.dots[j] = new Ball({
@@ -243,9 +244,9 @@ export default class DGame {
 								x: newCheckDotCoor.x | 0, z: newCheckDotCoor.z | 0, vx: speed1.vx, vz: speed1.vz,
 								r: newCheckDotR - 1, color: 'blue'
 							});
-							if(this.r - newCheckDotR - 1 > 15 && this.r !== 40){
+							if(this.r - newCheckDotR - 1 > 10 && this.r !== 20){
 								this.camera.decreaseRCam();
-								this.r -= 15;
+								this.r -= 10;
 							}
 						} else {
 							this.dots[k] = new Ball({
@@ -283,4 +284,3 @@ export default class DGame {
 	}
 
 }
-

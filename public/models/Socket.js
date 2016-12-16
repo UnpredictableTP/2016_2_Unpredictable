@@ -15,14 +15,15 @@ export default class Socket {
 		this.answer = {};
 	}
 
-	init(key) {
-		this.workOpen(key);
+	init(animate) {
+		this.animate = animate;
+		this.workOpen();
 		this.workMessage();
 		this.workClose();
 	}
 
-	workOpen(key) {
-		this.socket.onopen = (event, key) => {
+	workOpen() {
+		this.socket.onopen = (event) => {
 			console.log('socket open');
 			this.send();
 		};
@@ -35,7 +36,7 @@ export default class Socket {
 	workMessage(event) {
 		this.socket.onmessage = function (event) {
 			console.log('socket answer');
-			//this.answer = event;
+			this.animate(event.message);
 		};
 	}
 

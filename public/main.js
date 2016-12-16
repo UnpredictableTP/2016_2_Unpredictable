@@ -13,22 +13,22 @@ import SinglePlayView from './views/singleplayerView';
 import MultiPlayView from './views/multiplayerView';
 
 
-const serviceWorker = function () {
-
-	if (!navigator.serviceWorker) {
-		return;
-	}
-	navigator.serviceWorker.register(
-		'/sw.js'
-	).then(function (registration) {
-		// при удачной регистрации имеем объект типа ServiceWorkerRegistration
-		console.log('ServiceWorker registration', registration);
-		// строкой ниже можно прекратить работу serviceWorker’а
-		// registration.unregister();
-	}).catch(function (err) {
-		throw new Error('ServiceWorker error: ' + err);
-	});
-};
+// const serviceWorker = function () {
+//
+// 	if (!navigator.serviceWorker) {
+// 		return;
+// 	}
+// 	navigator.serviceWorker.register(
+// 		'/sw.js'
+// 	).then(function (registration) {
+// 		// при удачной регистрации имеем объект типа ServiceWorkerRegistration
+// 		console.log('ServiceWorker registration', registration);
+// 		// строкой ниже можно прекратить работу serviceWorker’а
+// 		// registration.unregister();
+// 	}).catch(function (err) {
+// 		throw new Error('ServiceWorker error: ' + err);
+// 	});
+// };
 
 const options = {
 	user: new User(),

@@ -12,6 +12,7 @@ export default class pointerLock{
 		this.camera = camera;
 
 		this.canvas = rendrer.domElement;
+		this.pauseMenu();
 		this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
 		document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
 		this.canvas.onclick = () => {
@@ -29,6 +30,7 @@ export default class pointerLock{
 			document.addEventListener("mousemove", this.updatePosition, false);
 			this.locked = true;
 		} else {
+			this.pauseMenu();
 			document.removeEventListener("mousemove", this.updatePosition, false);
 			console.log('The pointer lock status is now unlocked');
 			this.locked = false;
@@ -51,5 +53,11 @@ export default class pointerLock{
 		let coordinates = this.camera.getPosition();
 		let d = mousePosition.movementX - this.oldPosition;
 		this.camera.countCircle(d);
+	}
+
+	pauseMenu(){
+		this.ctx = this.canvas.getContext('3d');
+		console.log(this.canvas);
+		this.ctx.fillText("LOLOLOLOL", 10, 10);
 	}
 }

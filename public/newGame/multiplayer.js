@@ -15,7 +15,6 @@ export default class DGame {
 		this.height = 800;
 
 		this.socket = new Socket();
-		this.socket.init(this.key);
 		this.key = new KeyMaster();
 
 		this.players = [];
@@ -25,11 +24,11 @@ export default class DGame {
 
 		this.rendrer = new THREE.WebGLRenderer({antialias: true});
 		this.rendrer.setSize(this.width, this.height);
-
 	}
 
 
 	init(element) {
+		this.socket.init(this.key, this.animate());
 		element.appendChild(this.rendrer.domElement);
 
 		this.camera = new Camera({x: 0, y: 200, z: 300});
@@ -59,24 +58,21 @@ export default class DGame {
 		let calcSpeed = this.calcSpeed.bind(this);
 		document.addEventListener('mouseup', calcSpeed, false);
 		this.rendrer.setClearColor('#F5F5F5');
+		this.date = Date.now;
 	}
 
-	animate() {
-		let date = Date.now();
-		let doAnimate = () => {
-			let localdate = Date.now();
-			this.doKeys();
-			this.sphere.update(localdate - date);
-			this.sphere.decreaseAll();
-			this.sphere.setCamera(this.camera.getCamera());
-			this.sphere.decreaseR(this.scene);
-			this.checkR();
-			this.renderer();
-			//this.socket.send();
-			date = localdate;
-			requestAnimationFrame(doAnimate);
-		};
-		doAnimate();
+	animate(message) {
+		debugger;
+		let localdate = Date.now();
+		this.doKeys();
+		this.sphere.update(localdate - this.date);
+		this.sphere.decreaseAll();
+		this.sphere.setCamera(this.camera.getCamera());
+		this.sphere.decreaseR(this.scene);
+		this.checkR();
+		this.renderer();
+		//this.socket.send();
+		this.date = localdate;
 	}
 
 	calcSpeed(event) {
