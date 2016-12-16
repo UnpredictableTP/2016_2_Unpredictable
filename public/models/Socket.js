@@ -35,7 +35,7 @@ export default class Socket {
 
 	workMessage(event) {
 		this.socket.onmessage = function (event) {
-			console.log('socket answer');
+			console.log('socket answer', event);
 			this.animate(event.message);
 		};
 	}
