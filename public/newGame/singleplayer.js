@@ -17,7 +17,7 @@ export default class DGame {
 
 		this.dots = [];
 
-		this.rendrer = new THREE.WebGLRenderer({antialias: true});
+		this.rendrer = new THREE.WebGLRenderer({canvas: document.querySelector('.js-canvas'), antialias: true});
 		this.rendrer.setSize(this.width, this.height);
 	}
 

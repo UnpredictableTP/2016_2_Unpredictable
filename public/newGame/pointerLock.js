@@ -1,7 +1,6 @@
 'use strict';
 
-
-import DGame from './singleplayer';
+import Button from '../components/button/button';
 
 export default class pointerLock{
 	constructor(rendrer, camera){
@@ -10,9 +9,8 @@ export default class pointerLock{
 		this.locked = false;
 		this.canCalcSpeed = false;
 		this.camera = camera;
-
 		this.canvas = rendrer.domElement;
-		this.pauseMenu();
+		this.setPauseMenu();
 		this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
 		document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
 		this.canvas.onclick = () => {
@@ -30,7 +28,6 @@ export default class pointerLock{
 			document.addEventListener("mousemove", this.updatePosition, false);
 			this.locked = true;
 		} else {
-			this.pauseMenu();
 			document.removeEventListener("mousemove", this.updatePosition, false);
 			console.log('The pointer lock status is now unlocked');
 			this.locked = false;
@@ -55,9 +52,10 @@ export default class pointerLock{
 		this.camera.countCircle(d);
 	}
 
-	pauseMenu(){
-		this.ctx = this.canvas.getContext('3d');
-		console.log(this.canvas);
-		this.ctx.fillText("LOLOLOLOL", 10, 10);
+	setPauseMenu(){
+		this.contButton = new Button('Continue', {});
+		console.log(this.contButton);
+		this.canvas.appendChild(this.contButton._get());
 	}
+
 }

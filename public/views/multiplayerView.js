@@ -13,8 +13,8 @@ export default class SinglePlayView extends View {
 
 	init(options = {}) {
 		this.user.backgroundView.pause();
-		this.game.init(this.getElement());
-		this.game.animate();
+		// this.game.init(this.getElement());
+		// this.game.animate();
 	}
 
 }

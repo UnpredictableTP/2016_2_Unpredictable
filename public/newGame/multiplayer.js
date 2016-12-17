@@ -15,12 +15,12 @@ export default class DGame {
 		this.height = 800;
 
 		this.socket = new Socket();
+		this.socket.init(this.animate(), this.init());
+
 		this.key = new KeyMaster();
 
 		this.players = [];
 		this.dots = [];
-
-		this.key.init();
 
 		this.rendrer = new THREE.WebGLRenderer({antialias: true});
 		this.rendrer.setSize(this.width, this.height);
@@ -28,8 +28,9 @@ export default class DGame {
 
 
 	init(element) {
-		this.socket.init(this.key, this.animate());
 		element.appendChild(this.rendrer.domElement);
+
+		this.key.init();
 
 		this.camera = new Camera({x: 0, y: 200, z: 300});
 		this.camera.setCamera(this.width, this.height);
