@@ -14,28 +14,33 @@ export default class DGame {
 		this.width = 1200;
 		this.height = 800;
 
-		this.socket = new Socket();
-		this.socket.init(this.animate(), this.init());
-
 		this.key = new KeyMaster();
 
 		this.players = [];
 		this.dots = [];
 
-		this.rendrer = new THREE.WebGLRenderer({antialias: true});
+		this.rendrer = new THREE.WebGLRenderer({canvas: document.querySelector('.js-canvas'), antialias: true});
 		this.rendrer.setSize(this.width, this.height);
+		console.log(this.rendrer);
 	}
 
+	initSocket(element){
+        this.socket = new Socket();
+        this.socket.init({
+        	animate : this.animate.bind(this),
+			init: this.init.bind(this),
+			animateCamera: this.animateCamera.bind(this),
+			element: element
+        });
+	}
 
-	init(element) {
+	init(element, content, id) {
+		console.log(content);
+		this.id = id;
 		element.appendChild(this.rendrer.domElement);
 
 		this.key.init();
 
-		this.camera = new Camera({x: 0, y: 200, z: 300});
-		this.camera.setCamera(this.width, this.height);
-
-		this.pointerLock = new pointerLock(this.rendrer, this.camera);
 		this.i = 0;
 
 		this.scene = new THREE.Scene();
@@ -43,17 +48,27 @@ export default class DGame {
 		this.players = [];
 		this.dots = [];
 		this.r = 40;
-		this.sphere = new Ball({x: 100, y: 0, z: 100, r: this.r, color: 'blue'});
-		this.sphere.setCamera(this.camera.getCamera());
-		this.sphere.draw(this.scene);
+		for(let i = 0; i < content.players.length; ++i){
+            let body = content.players[i].playerSquare.partSnaps[0].body;
+            console.log(body);
+            this.players[i] = new Ball({x: body.x, y: 0, z: body.y, r: this.r, color: 'blue'});
+            if(this.id === i) {
+                this.camera = new Camera({x: body.x, y: 100, z: body.y + 150});
+                this.camera.setCamera(this.width, this.height);
+                this.players[i].setCamera(this.camera.getCamera());
+                this.light = new Light({x: body.x + 0, y: 150, z: 100 + body.y});
+            }
+            this.players[i].draw(this.scene);
+		}
 
-		this.grid = new THREE.GridHelper(2000, 50, 'grey', 'grey');
+        this.pointerLock = new pointerLock(this.rendrer, this.camera);
+
+        this.grid = new THREE.GridHelper(2000, 50, 'grey', 'grey');
 		this.scene.add(this.grid);
 
 		this.Sin = 0;
 		this.Cos = 0;
 
-		this.light = new Light({x: 0, y: 150, z: 100});
 		this.light.setLight(this.scene);
 
 		let calcSpeed = this.calcSpeed.bind(this);
@@ -62,37 +77,48 @@ export default class DGame {
 		this.date = Date.now;
 	}
 
-	animate(message) {
-		debugger;
-		let localdate = Date.now();
-		this.doKeys();
-		this.sphere.update(localdate - this.date);
-		this.sphere.decreaseAll();
-		this.sphere.setCamera(this.camera.getCamera());
-		this.sphere.decreaseR(this.scene);
-		this.checkR();
+	animate(content) {
+		console.log(content, this.id);
+		for(let i = 0; i < content.players.length; ++i){
+            let body = content.players[i].playerSquare.partSnaps[0].body;
+            this.players[i].updateCoor({x: body.x, z: body.y});
+            if(this.id === i) {
+            	console.log(body);
+                this.players[i].setCamera(this.camera.getCamera());
+            }
+        }
+		// this.players[this.id].update(localdate - this.date);
+		// this.sphere.decreaseAll();
+		// this.sphere.decreaseR(this.scene);
+		// this.checkR();
 		this.renderer();
-		//this.socket.send();
-		this.date = localdate;
+	}
+
+	animateCamera(){
+        let doAnimate = () => {
+            this.condition = this.pointerLock.getLocked();
+            if (this.condition.locked) {
+                let localdate = Date.now();
+                this.doKeys(localdate - this.date);
+                let coordinates = this.camera.getPosition();
+                let ballCoordinates = this.players[this.id].getPosition();
+                let newCoor = {
+                    x: (coordinates.x + ballCoordinates.x) | 0,
+                    y: coordinates.y + ballCoordinates.y,
+                    z: (coordinates.z + ballCoordinates.z)| 0
+                };
+                this.camera.changePosition(newCoor);
+                this.players[this.id].setCamera(this.camera.getCamera());
+                this.light.changePosition(newCoor);
+                this.renderer();
+                this.date = localdate;
+            }
+            requestAnimationFrame(doAnimate);
+        };
+        doAnimate();
 	}
 
 	calcSpeed(event) {
-		// this.calcSinCos();
-		// this.dots[this.i].removeFromScene(this.scene);
-		// let coor = this.dots[this.i].getPosition();
-		// this.dots.pop();
-		// let food = new Ball({x: coor.x, z: coor.z, r: 7, color: 'green'});
-		// food.draw(this.scene);
-		// this.dots.push(food);
-		// this.food.push(this.i);
-		// this.dots[this.i].changeSpeed(-this.Sin, -this.Cos);
-		// ++this.i;
-		// this.r -= 3;
-		// let sphere = new Ball({x: coor.x, z: coor.z, r: this.r, color: 'blue'});
-		// sphere.draw(this.scene);
-		// this.dots.push(sphere);
-		// this.dots[this.i].changeSpeed(this.Sin, this.Cos);
-		// this.dots[this.i].changeOpacity();
 	}
 
 	calcSinCos() {
@@ -102,35 +128,56 @@ export default class DGame {
 		this.Cos = coordinates.z / sum;
 	}
 
-	doKeys() {
+	doKeys(time) {
 		if (this.key.is('w') || this.key.is('ц')) {
 			this.calcSinCos();
-			this.sphere.moveForward(this.Sin, this.Cos);
+			this.socket.prepareMessage({
+				sin: this.Sin,
+				cos: this.Cos,
+				button: 'w',
+				time: time
+			});
+			this.socket.send();
 		}
 		if (this.key.is('s') || this.key.is('ы')) {
 			this.calcSinCos();
-			this.sphere.moveBackward(this.Sin, this.Cos);
-		}
+            this.socket.prepareMessage({
+                sin: this.Sin,
+                cos: this.Cos,
+                button: 's',
+                time: time
+            });
+            this.socket.send();		}
 		if (this.key.is('a') || this.key.is('ф')) {
 			this.calcSinCos();
-			this.sphere.moveLeft(this.Sin, this.Cos);
-		}
+            this.socket.prepareMessage({
+                sin: this.Sin,
+                cos: this.Cos,
+                button: 'a',
+                time: time
+            });
+            this.socket.send();		}
 		if (this.key.is('d') || this.key.is('в')) {
-			this.calcSinCos();
-			this.sphere.moveRight(this.Sin, this.Cos);
-		}
+            this.calcSinCos();
+            this.socket.prepareMessage({
+                sin: this.Sin,
+                cos: this.Cos,
+                button: 'd',
+                time: time
+            });
+            this.socket.send();		}
 		if (this.key.is(' ')) {
-			this.sphere.increaseR(this.scene);
+			this.players[this.id].increaseR(this.scene);
 		}
-		let coordinates = this.camera.getPosition();
-		let ballCoordinates = this.sphere.getPosition();
-		let newCoor = {
-			x: coordinates.x + ballCoordinates.x,
-			y: coordinates.y + ballCoordinates.y,
-			z: coordinates.z + ballCoordinates.z
-		};
-		this.camera.changePosition(newCoor);
-		this.light.changePosition(newCoor);
+		// let coordinates = this.camera.getPosition();
+		// let ballCoordinates = this.players[this.id].getPosition();
+		// let newCoor = {
+		// 	x: coordinates.x + ballCoordinates.x,
+		// 	y: coordinates.y + ballCoordinates.y,
+		// 	z: coordinates.z + ballCoordinates.z
+		// };
+		// this.camera.changePosition(newCoor);
+		// this.light.changePosition(newCoor);
 
 	}
 

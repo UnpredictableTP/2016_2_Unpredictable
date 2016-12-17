@@ -32,7 +32,7 @@ import MultiPlayView from './views/multiplayerView';
 
 const options = {
 	user: new User(),
-	host: 'https://warm-fortress-86891.herokuapp.com/',
+	host: 'http://localhost:8080/',
 	backgroundView: new BackgroundView(),
 };
 

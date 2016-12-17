@@ -10,7 +10,7 @@ export default class pointerLock{
 		this.canCalcSpeed = false;
 		this.camera = camera;
 		this.canvas = rendrer.domElement;
-		this.setPauseMenu();
+		// this.setPauseMenu();
 		this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
 		document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
 		this.canvas.onclick = () => {

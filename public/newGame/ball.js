@@ -87,7 +87,7 @@ export default class Ball {
 			this.vz = -1 * ((20 * Sin) | 0);
 		}
 	}
-
+//Уменьшение скорости
 	decreaseAll() {
 		if (this.vz !== 0) {
 			if (0 < this.vz && this.vz <= 50) {
@@ -104,7 +104,7 @@ export default class Ball {
 			}
 		}
 	}
-
+///////
 	increaseR(scene) {
 		if (this.canChangeR) {
 			this.canChangeR = false;
@@ -151,7 +151,7 @@ export default class Ball {
 			x: false,
 			z: false
 		};
-
+//ОБработка столкновения с стенками
 		if (this.x + this.newR >= 1000) {
 			this.x = (1000 - this.newR) | 0;
 			result.x = true;
@@ -178,7 +178,7 @@ export default class Ball {
 			this.vz *= -1;
 		}
 	}
-
+//////
 	prepareData(){
 		return {
 			vx: this.vx,
@@ -188,5 +188,11 @@ export default class Ball {
 
 		}
 	}
+
+	updateCoor({x, z}){
+		this.x = x;
+		this.z = z;
+        this.objectmesh.position.set(this.x, this.y, this.z);
+    }
 
 }
