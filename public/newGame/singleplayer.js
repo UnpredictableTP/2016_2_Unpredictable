@@ -9,9 +9,9 @@ import pointerLock from "./pointerLock"
 let THREE = THREELib(); // return THREE JS
 
 export default class DGame {
-	constructor() {
-		this.width = 1200;
-		this.height = 800;
+	constructor({width, height}) {
+		this.width = width;
+		this.height = height;
 
 		this.key = new KeyMaster();
 
@@ -22,14 +22,14 @@ export default class DGame {
 	}
 
 
-	init(element) {
+	init(element, goBack) {
 		element.appendChild(this.rendrer.domElement);
 		this.key.init();
 
 		this.camera = new Camera({x: 0, y: 100, z: 150});
 		this.camera.setCamera(this.width, this.height);
 
-		this.pointerLock = new pointerLock(this.rendrer, this.camera);
+		this.pointerLock = new pointerLock(this.rendrer, this.camera, this.removeList.bind(this), goBack);
 
 		this.scene = new THREE.Scene();
 
@@ -79,8 +79,8 @@ export default class DGame {
 		this.light = new Light({x: 0, y: 150, z: 100});
 		this.light.setLight(this.scene);
 
-		let calcSpeed = this.calcSpeed.bind(this);
-		document.addEventListener('mouseup', calcSpeed, false);
+		this.calcSpeed = this.calcSpeed.bind(this);
+		this.added = false;
 		this.rendrer.setClearColor('#F5F5F5');
 	}
 
@@ -89,6 +89,10 @@ export default class DGame {
 		let doAnimate = () => {
 			this.condition = this.pointerLock.getLocked();
 			if (this.condition.locked) {
+				if(!this.added){
+					document.addEventListener('click', this.calcSpeed);
+					this.added = true;
+				}
 				let localdate = Date.now();
 				this.doKeys();
 				this.player.update(localdate - date);
@@ -115,8 +119,12 @@ export default class DGame {
 		doAnimate();
 	}
 
+	removeList(){
+		document.removeEventListener('click', this.calcSpeed);
+		this.added = false;
+	}
+
 	calcSpeed(event) {
-		if (this.condition.canCalcSpeed) {
 			this.calcSinCos();
 			this.player.removeFromScene(this.scene);
 			let coor = this.player.getPosition();
@@ -132,9 +140,6 @@ export default class DGame {
 			} else {
 				console.log('Game over');
 			}
-		} else {
-			this.pointerLock.setConditionCalc();
-		}
 	}
 
 	calcSinCos() {

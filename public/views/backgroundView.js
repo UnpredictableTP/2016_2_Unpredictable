@@ -38,4 +38,11 @@ export default class backgroundView extends View {
 	pause() {
 		this.canvas.hidden = true;
 	}
+
+	getSize(){
+		return {
+			width: this._el.clientWidth,
+			height: this._el.clientHeight
+		}
+	}
 }

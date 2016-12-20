@@ -32,7 +32,7 @@ import MultiPlayView from './views/multiplayerView';
 
 const options = {
 	user: new User(),
-	host: 'http://localhost:8080/',
+	host: 'https://guarded-oasis-31621.herokuapp.com/',
 	backgroundView: new BackgroundView(),
 };
 

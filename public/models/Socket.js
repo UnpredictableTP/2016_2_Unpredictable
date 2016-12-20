@@ -8,7 +8,7 @@ const THREE = THREELib(); // return THREE JS
 export default class Socket {
 	constructor() {
 		//wss://guarded-oasis-31621.herokuapp.com/game
-		this.socket = new WebSocket('ws://localhost:8080/game');
+		this.socket = new WebSocket('wss://guarded-oasis-31621.herokuapp.com/game');
 		this.Message = {
 			type: 'ru.mail.park.mechanics.requests.JoinGame$Request',
 			content: "{}",

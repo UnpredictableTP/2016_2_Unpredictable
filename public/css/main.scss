@@ -56,6 +56,10 @@ body {
 		padding-top: 10vh;
 	}
 
+	.js-play{
+		z-index: 0;
+	}
+
 	#preload {
 		display: block;
 		position: absolute;
@@ -66,6 +70,20 @@ body {
 		height: 100%;
 		background: #89bd9e url(http://hello-site.ru//main/images/preloads/circles.svg) center center no-repeat;
 		background-size: 143px;
+	}
+
+	.js-button1 {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		z-index: 2;
+	}
+
+	.js-button2 {
+		position: absolute;
+		top: 20px;
+		left: 20px;
+		z-index: 2;
 	}
 
 }
