@@ -22,7 +22,7 @@ export default class Ball {
 	}
 
 	draw(scene) {
-		this.object = new THREE.SphereGeometry(this.newR | 0, 26, 26);
+		this.object = new THREE.SphereGeometry(this.newR | 0, 28, 28);
 		this.material = new THREE.MeshPhongMaterial({color: this.color, transparent: true});
 		this.objectmesh = new THREE.Mesh(this.object, this.material);
 		this.objectmesh.position.set(this.x, this.y, this.z);

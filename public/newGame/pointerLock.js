@@ -12,6 +12,7 @@ export default class pointerLock{
 		this.canvas = rendrer.domElement;
 		this.removeList = removeList;
 		this.goBack = goBack;
+		this.first = true;
 		this.contButton = new Block('div', {});
 		this.continue = this.contButton._get();
 		this.exitButton = new Block('div', {});
@@ -64,17 +65,23 @@ export default class pointerLock{
 	}
 
 	setPauseMenu(){
-		let divCont = document.querySelector('.js-play');
-		this.continue.classList.add('button');
-		this.continue.classList.add('js-button1');
-		this.continue.innerHTML = 'Continue';
-		this.exit.classList.add('button');
-		this.exit.classList.add('js-button2');
-		this.exit.innerHTML = 'Exit';
-
-		divCont.appendChild(this.canvas);
-		divCont.appendChild(this.continue);
-		divCont.appendChild(this.exit);
+		this.divCont = document.querySelector('.js-play');
+		if(!this.first) {
+			this.continue.classList.add('button');
+			this.continue.classList.add('js-button1');
+			this.continue.innerHTML = 'Continue';
+			this.exit.classList.add('button');
+			this.exit.classList.add('js-button2');
+			this.exit.innerHTML = 'Exit';
+		} else {
+			this.continue.classList.add('button');
+			this.continue.classList.add('js-button1');
+			this.continue.innerHTML = 'Click to start playing';
+			this.first = false;
+		}
+		this.divCont.appendChild(this.canvas);
+		this.divCont.appendChild(this.continue);
+		this.divCont.appendChild(this.exit);
 	}
 
 	destroy(){
@@ -89,5 +96,19 @@ export default class pointerLock{
 		this.exit.classList.remove('js-button1');
 
 		this.continue.requestPointerLock();
+	}
+
+	gameOver(){
+		document.exitPointerLock();
+		this.removeList();
+		// this.continue.addEventListener('click', this.destroy);
+		this.continue.innerHTML = "Try again";
+		this.exit.addEventListener('click', this.goBack);
+		document.removeEventListener("mousemove", this.updatePosition, false);
+		this.locked = false;
+		this.canCalcSpeed = false;
+		let gameover = new Block('div', {});
+		gameover._get().innerHTML = "Game Over. Would you lie to try again";
+		this.divCont.appendChild(gameover._get());
 	}
 }

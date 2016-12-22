@@ -12,7 +12,7 @@ export default class backgroundView extends View {
 	}
 
 	_initCanvas() {
-		this.canvas = this._el.querySelector('.js-canvas-new');
+		this.canvas = this._el.querySelector('.js-canvas-background');
 		this.canvas.width = this._el.clientWidth;
 		this.canvas.height = this._el.clientHeight;
 	}
@@ -36,6 +36,7 @@ export default class backgroundView extends View {
 	}
 
 	pause() {
+		this._background.stop();
 		this.canvas.hidden = true;
 	}
 

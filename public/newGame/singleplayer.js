@@ -6,6 +6,7 @@ import Camera from "./camera";
 import KeyMaster from "./keymaster";
 import Light from "./light";
 import pointerLock from "./pointerLock"
+import Block from "../components/block/block"
 let THREE = THREELib(); // return THREE JS
 
 export default class DGame {
@@ -19,14 +20,20 @@ export default class DGame {
 
 		this.rendrer = new THREE.WebGLRenderer({canvas: document.querySelector('.js-canvas'), antialias: true});
 		this.rendrer.setSize(this.width, this.height);
+		this.score = 0;
 	}
 
 
 	init(element, goBack) {
+		this.divCont = document.querySelector('.js-play');
+		this.scoreDiv = new Block('div', {});
+		this.scoreLable = this.scoreDiv._get();
+		this.scoreLable.classList.add('js-button1');
+
 		element.appendChild(this.rendrer.domElement);
 		this.key.init();
 
-		this.camera = new Camera({x: 0, y: 100, z: 150});
+		this.camera = new Camera({x: 0, y: 100, z: 300});
 		this.camera.setCamera(this.width, this.height);
 
 		this.pointerLock = new pointerLock(this.rendrer, this.camera, this.removeList.bind(this), goBack);
@@ -40,34 +47,7 @@ export default class DGame {
 		this.player = new Ball({x: 100, y: 0, z: 100, r: this.r, color: 'blue'});
 		this.player.setCamera(this.camera.getCamera());
 		this.player.draw(this.scene);
-
-		let randsphere = new Ball({x: 50, y: 0, z: 100, vx: 20, vz: 15, r: 25, color: 'red'});
-		randsphere.draw(this.scene);
-		this.dots.push(randsphere);
-		let randsphere1 = new Ball({x: 150, y: 0, z: 10, r: 10, vx: 25, vz: -15, color: 'green'});
-		randsphere1.draw(this.scene);
-		this.dots.push(randsphere1);
-		let randsphere2 = new Ball({x: 300, y: 0, z: 150, vx: -15, vz: -20, r: 12, color: 'green'});
-		randsphere2.draw(this.scene);
-		this.dots.push(randsphere2);
-		let randsphere3 = new Ball({x: -300, y: 0, z: 150, vx: -25, vz: -20, r: 17, color: 'green'});
-		randsphere3.draw(this.scene);
-		this.dots.push(randsphere3);
-		let randsphere4 = new Ball({x: 300, y: 0, z: -150, vx: -30, vz: -12, r: 13, color: 'green'});
-		randsphere4.draw(this.scene);
-		this.dots.push(randsphere4);
-		let randsphere5 = new Ball({x: 300, y: 0, z: -150, vx: -15, vz: 15, r: 17, color: 'green'});
-		randsphere5.draw(this.scene);
-		this.dots.push(randsphere5);
-		let randsphere6 = new Ball({x: 300, y: 0, z: -150, vx: 10, vz: -15, r: 30, color: 'red'});
-		randsphere6.draw(this.scene);
-		this.dots.push(randsphere6);
-		let randsphere7 = new Ball({x: 350, y: 0, z: -450, vx: 20, vz: -15, r: 15, color: 'green'});
-		randsphere7.draw(this.scene);
-		this.dots.push(randsphere7);
-		let randsphere8 = new Ball({x: -300, y: 0, z: -150, vx: 30, vz: -15, r: 30, color: 'red'});
-		randsphere8.draw(this.scene);
-		this.dots.push(randsphere8);
+		this.fillField();
 
 		this.grid = new THREE.GridHelper(1000, 50, 'grey', 'grey');
 		this.scene.add(this.grid);
@@ -112,6 +92,7 @@ export default class DGame {
 				this.player.decreaseR(this.scene);
 				this.checkR();
 				this.renderer();
+				this.setScore();
 				date = localdate;
 			}
 			requestAnimationFrame(doAnimate);
@@ -133,12 +114,12 @@ export default class DGame {
 			food.changeSpeed(-this.Sin, -this.Cos);
 			this.dots.push(food);
 			let r = this.player.getR().r - 5;
-			if(!this.checkExist(r, -1).delete) {
+			if(!this.checkExist(r, -1).bool) {
 				this.player = new Ball({x: coor.x, z: coor.z, r: r, color: 'blue'});
 				this.player.draw(this.scene);
 				this.player.changeSpeed(this.Sin, this.Cos);
 			} else {
-				console.log('Game over');
+				this.pointerLock.gameOver();
 			}
 	}
 
@@ -214,6 +195,7 @@ export default class DGame {
 							x: newCheckDotCoor.x | 0, z: newCheckDotCoor.z | 0, vx: speed1.vx, vz: speed1.vz,
 							r: newCheckDotR + this.plural, color: 'blue'
 						});
+						this.score += 1;
 						if(newCheckDotR + 1 - this.r > 10){
 							this.camera.increaseRCam();
 							this.r += 15;
@@ -242,17 +224,20 @@ export default class DGame {
 						r: checkDotR.r + this.plural
 					});
 					this.dots[j].draw(this.scene);
-					let newk = this.checkExist(newCheckDotR - 1, k).k;
-					if(k === newk) {
+					let newk = this.checkExist(newCheckDotR - 1, k);
+					if(k === newk.k) {
 						if (k === this.dots.length - 1) {
 							this.dots[k] = new Ball({
 								x: newCheckDotCoor.x | 0, z: newCheckDotCoor.z | 0, vx: speed1.vx, vz: speed1.vz,
 								r: newCheckDotR - 1, color: 'blue'
 							});
-							if(this.r - newCheckDotR - 1 > 10 && this.r !== 20){
+							this.score -= 1;
+							if (this.r - newCheckDotR - 1 > 10 && this.r !== 20) {
 								this.camera.decreaseRCam();
-								this.r -= 10;
+								this.r -= 15;
 							}
+						} else if(newk.bool){
+							this.pointerLock.gameOver();
 						} else {
 							this.dots[k] = new Ball({
 								x: newCheckDotCoor.x | 0, z: newCheckDotCoor.z | 0, vx: speed1.vx, vz: speed1.vz,
@@ -262,17 +247,22 @@ export default class DGame {
 						this.dots[k].draw(this.scene);
 					}
 				}
+				if(this.dots.length < 20){
+					this.addOneMore();
+				}
 			}
 		}
 	}
 
 	checkExist(R, k){
+		let boolResult = false;
 		if(R < 5){
 			if(k == -1){
-				return { delete: true};
+				boolResult = true;
 			}
 			if(k === this.dots.length - 1){
 				this.dots.pop();
+				boolResult = true;
 			} else {
 				for (let m = k; m < this.dots.length - 1; ++m) {
 					this.dots[m] = this.dots[m + 1]
@@ -281,11 +271,42 @@ export default class DGame {
 				--k;
 			}
 		}
-		return { k: k};
+		return {
+			k: k,
+			bool : boolResult
+		};
 	}
 
 	renderer() {
 		this.rendrer.render(this.scene, this.camera.getCamera());
+	}
+
+	setScore(){
+		this.scoreLable.innerHTML = 'Score: ' + this.score;
+		this.divCont.appendChild(this.scoreLable);
+	}
+
+	fillField(){
+		for(let i = 0; i < 20 ; ++i) {
+			let randsphere = new Ball({x: this.random(-1000, 1000), y: 0, z: this.random(-1000, 1000),
+				vx: this.random(-30, 30), vz: this.random(-30, 30), r: this.random(10, 100)});
+			randsphere.draw(this.scene);
+			this.dots.push(randsphere);
+		}
+	}
+
+	addOneMore(){
+		let buffer = this.dots.pop();
+		let randsphere = new Ball({x: this.random(-1000, 1000), y: 0, z: this.random(-1000, 1000),
+			vx: this.random(-30, 30), vz: this.random(-30, 30), r: this.random(10, 70)});
+		randsphere.draw(this.scene);
+		this.dots.push(randsphere);
+		this.dots.push(buffer);
+	}
+
+	random(min, max)
+	{
+		return Math.random() * (max - min) + min;
 	}
 
 }

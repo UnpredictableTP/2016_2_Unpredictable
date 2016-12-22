@@ -84,6 +84,7 @@ window.onload = function () {
 window.addEventListener('click', eventListener);
 window.addEventListener('tap', eventListener);
 
+
 // TIP: роуты нужно указывать от наиболее специфичного к наименее специфичному
 // З.Ы. чтобы более ранние роуты не были префиксами более поздних ;]
 

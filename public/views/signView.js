@@ -71,6 +71,7 @@ export default class SignView extends View {
 				this.router.go('/app');
 			}).catch((errors) => {
 			for (let key in errors) {
+				debugger;
 				this.inErrors[key].innerText = errors[key];
 			}
 			console.log('There are some errors in your data, check them and try one more time');

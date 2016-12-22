@@ -13,12 +13,18 @@ export default class SinglePlayView extends View {
 
 
 	init(options = {}) {
-		this.user.backgroundView.pause();
 		this.game.init(this.getElement(), this.goBack.bind(this));
+	}
+
+	resume(){
+		this.user.backgroundView.pause();
+		this.show();
 		this.game.animate();
 	}
 
 	goBack(){
+		this.hide();
+		this.user.backgroundView.resume();
 		this.router.go('/');
 	}
 
