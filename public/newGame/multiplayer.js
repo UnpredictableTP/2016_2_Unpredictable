@@ -10,9 +10,9 @@ import pointerLock from "./pointerLock"
 var THREE = THREELib(); // return THREE JS
 
 export default class DGame {
-	constructor() {
-		this.width = 1200;
-		this.height = 800;
+	constructor({width, height}) {
+		this.width = width;
+		this.height = height;
 
 		this.key = new KeyMaster();
 
@@ -21,17 +21,19 @@ export default class DGame {
 
 		this.rendrer = new THREE.WebGLRenderer({canvas: document.querySelector('.js-canvas'), antialias: true});
 		this.rendrer.setSize(this.width, this.height);
-		console.log(this.rendrer);
 	}
 
-	initSocket(element){
+	initSocket(element, goBack, reGo, hidePreload){
         this.socket = new Socket();
         this.socket.init({
         	animate : this.animate.bind(this),
 			init: this.init.bind(this),
 			animateCamera: this.animateCamera.bind(this),
+	        hidePreload: hidePreload,
 			element: element
         });
+		this.goBack = goBack;
+		this.rego = reGo;
 	}
 
 	init(element, content, id) {
@@ -52,8 +54,9 @@ export default class DGame {
             let body = content.players[i].playerSquare.partSnaps[0].body;
             console.log(body);
             this.players[i] = new Ball({x: body.x, y: 0, z: body.y, r: this.r, color: 'blue'});
-            if(this.id === i) {
-                this.camera = new Camera({x: body.x, y: 100, z: body.y + 150});
+            if(this.id === content.players[i].userId) {
+	            this.position = i;
+	            this.camera = new Camera({x: body.x, y: 100, z: body.y + 300});
                 this.camera.setCamera(this.width, this.height);
                 this.players[i].setCamera(this.camera.getCamera());
                 this.light = new Light({x: body.x + 0, y: 150, z: 100 + body.y});
@@ -61,7 +64,7 @@ export default class DGame {
             this.players[i].draw(this.scene);
 		}
 
-        this.pointerLock = new pointerLock(this.rendrer, this.camera);
+        this.pointerLock = new pointerLock(this.rendrer, this.camera,  this.removeList.bind(this), this.goBack, this.rego);
 
         this.grid = new THREE.GridHelper(2000, 50, 'grey', 'grey');
 		this.scene.add(this.grid);
@@ -78,20 +81,23 @@ export default class DGame {
 	}
 
 	animate(content) {
-		console.log(content, this.id);
+		//console.log(content, this.id);
 		for(let i = 0; i < content.players.length; ++i){
             let body = content.players[i].playerSquare.partSnaps[0].body;
             this.players[i].updateCoor({x: body.x, z: body.y});
-            if(this.id === i) {
+            if(this.id === this.players[i].userId) {
             	console.log(body);
                 this.players[i].setCamera(this.camera.getCamera());
             }
         }
-		// this.players[this.id].update(localdate - this.date);
-		// this.sphere.decreaseAll();
 		// this.sphere.decreaseR(this.scene);
 		// this.checkR();
 		this.renderer();
+	}
+
+	removeList() {
+		document.removeEventListener('click', this.calcSpeed);
+		this.added = false;
 	}
 
 	animateCamera(){
@@ -101,19 +107,20 @@ export default class DGame {
                 let localdate = Date.now();
                 this.doKeys(localdate - this.date);
                 let coordinates = this.camera.getPosition();
-                let ballCoordinates = this.players[this.id].getPosition();
+	            console.log(this.players, this.position);
+                let ballCoordinates = this.players[this.position].getPosition();
                 let newCoor = {
                     x: (coordinates.x + ballCoordinates.x) | 0,
                     y: coordinates.y + ballCoordinates.y,
                     z: (coordinates.z + ballCoordinates.z)| 0
                 };
                 this.camera.changePosition(newCoor);
-                this.players[this.id].setCamera(this.camera.getCamera());
+                this.players[this.position].setCamera(this.camera.getCamera());
                 this.light.changePosition(newCoor);
                 this.renderer();
                 this.date = localdate;
             }
-            requestAnimationFrame(doAnimate);
+	        this.animation = requestAnimationFrame(doAnimate);
         };
         doAnimate();
 	}
@@ -192,6 +199,10 @@ export default class DGame {
 		// 		this.dots[i].redraw(this.scene, 'red');
 		// 	}
 		// }
+	}
+
+	stopAnimation() {
+		cancelAnimationFrame(this.animation);
 	}
 
 	renderer() {

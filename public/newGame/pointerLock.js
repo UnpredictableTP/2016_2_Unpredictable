@@ -3,16 +3,17 @@
 import Block from '../components/block/block';
 
 export default class pointerLock{
-	constructor(rendrer, camera, removeList, goBack){
+	constructor(rendrer, camera, removeList, goBack, reGo){
 		this.lockChangeAlert = this.lockChangeAlert.bind(this);
 		this.oldPosition = 0;
 		this.locked = false;
-		this.canCalcSpeed = false;
 		this.camera = camera;
 		this.canvas = rendrer.domElement;
 		this.removeList = removeList;
 		this.goBack = goBack;
+		this.reGo = reGo;
 		this.first = true;
+		this.notPause = false;
 		this.contButton = new Block('div', {});
 		this.continue = this.contButton._get();
 		this.exitButton = new Block('div', {});
@@ -37,25 +38,21 @@ export default class pointerLock{
 			document.addEventListener("mousemove", this.updatePosition, false);
 		} else {
 			this.removeList();
-			this.continue.addEventListener('click', this.destroy);
+			if(!this.notPause){
+				this.continue.addEventListener('click', this.destroy);
+				this.setPauseMenu();
+			}
 			this.exit.addEventListener('click', this.goBack);
 			document.removeEventListener("mousemove", this.updatePosition, false);
 			console.log('The pointer lock status is now unlocked');
 			this.locked = false;
-			this.canCalcSpeed = false;
-			this.setPauseMenu();
 		}
 	}
 
 	getLocked(){
 		return {
 			locked: this.locked,
-			canCalcSpeed: this.canCalcSpeed
 		}
-	}
-
-	setConditionCalc(){
-		this.canCalcSpeed = true;
 	}
 
 	updatePosition(mousePosition) {
@@ -98,17 +95,40 @@ export default class pointerLock{
 		this.continue.requestPointerLock();
 	}
 
-	gameOver(){
+	gameOver(setNullScene){
 		document.exitPointerLock();
+		this.notPause = true;
 		this.removeList();
-		// this.continue.addEventListener('click', this.destroy);
+		this.setNullScene = setNullScene;
+		let tryOneMore = this.tryOneMore.bind(this);
+		this.continue.addEventListener('click', tryOneMore);
 		this.continue.innerHTML = "Try again";
-		this.exit.addEventListener('click', this.goBack);
+		this.continue.classList.add('button');
+		this.continue.classList.add('js-button1');
+		this.exit.classList.add('button');
+		this.exit.classList.add('js-button2');
+		this.exit.innerHTML = 'Exit';
 		document.removeEventListener("mousemove", this.updatePosition, false);
-		this.locked = false;
-		this.canCalcSpeed = false;
-		let gameover = new Block('div', {});
-		gameover._get().innerHTML = "Game Over. Would you lie to try again";
-		this.divCont.appendChild(gameover._get());
+		this.gameover = new Block('div', {});
+		this.gameover._get().innerHTML = "Game Over. Would you like to try again?";
+		this.gameover._get().classList.add('js-button2');
+		this.divCont.appendChild(this.gameover._get());
+		this.divCont.appendChild(this.continue);
+		this.divCont.appendChild(this.exit);
+	}
+
+	tryOneMore() {
+		this.continue.removeEventListener('click', this.tryOneMore);
+		this.continue.innerHTML = '';
+		this.continue.classList.remove('button');
+		this.continue.classList.remove('js-button1');
+		this.exit.removeEventListener('click', this.goBack);
+		this.exit.innerHTML = '';
+		this.exit.classList.remove('button');
+		this.exit.classList.remove('js-button1');
+		this.divCont.removeChild(this.gameover._get());
+		this.setNullScene();
+		debugger;
+		this.reGo();
 	}
 }

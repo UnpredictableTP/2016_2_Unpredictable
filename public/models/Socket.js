@@ -16,11 +16,12 @@ export default class Socket {
 		this.answer = {};
 	}
 
-	init({animate, init, element, animateCamera}) {
+	init({animate, init, element, animateCamera, hidePreload}) {
 		this.animate = animate;
 		this.gameinit = init;
 		this.element = element;
 		this.animateCamera = animateCamera;
+		this.hidePreload = hidePreload;
 		this.workOpen();
 		this.workMessage();
 		this.workClose();
@@ -42,10 +43,12 @@ export default class Socket {
 			let data = JSON.parse(event.data);
             let content = JSON.parse(data.content);
 			if(data.type === "ru.mail.park.mechanics.base.ServerSnap"){
+				console.log(content);
 				this.animate(content);
 			}
 			if(data.type === "ru.mail.park.mechanics.requests.InitGame$Request"){
-                this.gameinit(this.element, content, content.self - 1);
+				this.hidePreload();
+                this.gameinit(this.element, content, content.self);
                 this.animateCamera();
 			}
 		};

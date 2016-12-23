@@ -52,17 +52,17 @@ export default class Background {
 		const exec = this.exec.bind(this);
 		const self = this;
 
-		function step() {
+		let step = () => {
 			const now = Date.now();
 			const dt = now - (time || now);
 			time = now;
 
 			if (!self.isStopped()) {
-				requestAnimationFrame(step);
+				this.animation = requestAnimationFrame(step);
 			}
 
 			exec(dt);
-		}
+		};
 
 		step();
 	}
@@ -117,5 +117,9 @@ export default class Background {
 
 	getRandom(min, max) {
 		return ((Math.random() * (max - min)) + min);
+	}
+
+	stopAnimation(){
+		cancelAnimationFrame(this.animation);
 	}
 }

@@ -11,6 +11,7 @@ import ScoreboardView from './views/scoreboardView';
 import MainView from './views/mainView';
 import SinglePlayView from './views/singleplayerView';
 import MultiPlayView from './views/multiplayerView';
+import Preloader from './components/preloader'
 
 
 // const serviceWorker = function () {
@@ -59,31 +60,24 @@ const eventListener = function (event) {
 const preloader = document.getElementById('preload');
 // let preloader = document.getElementsByClassName("preload");
 
-const preloaderFunc = function (el) {
-	if (!el) {
-		return;
-	}
-	el.style.opacity = 1;
-	const interpreloader = setInterval(function () {
-		el.style.opacity -= 0.05;
-		if (el.style.opacity <= 0.05) {
-			clearInterval(interpreloader);
-			preloader.style.display = 'none';
-		}
-	}, 16);
-};
-
-
 window.onload = function () {
-	setTimeout(function () {
-		preloaderFunc(preloader);
-	}, 1000);
-};
+	this.preload = new Preloader();
+	this.preload.init(preloader);
+	this.preloader = preloader;
+	options.user.checkAuth()
+		.then((checked) => {
+			this.preload.setHide(this.preloader);
+			checked = true;
+		}).catch((checked) => {
+		this.preload.setHide(this.preloader);
+		new Router().go('/');
+		checked = true;
+	});
 
+};
 
 window.addEventListener('click', eventListener);
 window.addEventListener('tap', eventListener);
-
 
 // TIP: роуты нужно указывать от наиболее специфичного к наименее специфичному
 // З.Ы. чтобы более ранние роуты не были префиксами более поздних ;]
@@ -98,10 +92,3 @@ window.addEventListener('tap', eventListener);
 	.addRoute('/', MainView, options)
 	.start({}, options);
 
-options.user.checkAuth()
-	.then((checked) => {
-		checked = true;
-	}).catch((checked) => {
-		new Router().go('/');
-		checked = true;
-	});

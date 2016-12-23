@@ -24,7 +24,7 @@ export default class DGame {
 	}
 
 
-	init(element, goBack) {
+	init(element, goBack, reGo) {
 		this.divCont = document.querySelector('.js-play');
 		this.scoreDiv = new Block('div', {});
 		this.scoreLable = this.scoreDiv._get();
@@ -36,7 +36,7 @@ export default class DGame {
 		this.camera = new Camera({x: 0, y: 100, z: 300});
 		this.camera.setCamera(this.width, this.height);
 
-		this.pointerLock = new pointerLock(this.rendrer, this.camera, this.removeList.bind(this), goBack);
+		this.pointerLock = new pointerLock(this.rendrer, this.camera, this.removeList.bind(this), goBack, reGo);
 
 		this.scene = new THREE.Scene();
 
@@ -69,7 +69,7 @@ export default class DGame {
 		let doAnimate = () => {
 			this.condition = this.pointerLock.getLocked();
 			if (this.condition.locked) {
-				if(!this.added){
+				if (!this.added) {
 					document.addEventListener('click', this.calcSpeed);
 					this.added = true;
 				}
@@ -85,7 +85,7 @@ export default class DGame {
 					let checkDotCoor = this.dots[j].getPosition();
 					this.checkReactEach({j: j, checkDotCoor: checkDotCoor, checkDotR: checkDotR});
 				}
-				this.player = this.dots[this.dots.length -1];
+				this.player = this.dots[this.dots.length - 1];
 				this.dots.pop();
 				this.player.decreaseAll();
 				this.player.setCamera(this.camera.getCamera());
@@ -95,32 +95,33 @@ export default class DGame {
 				this.setScore();
 				date = localdate;
 			}
-			requestAnimationFrame(doAnimate);
+			this.animation = requestAnimationFrame(doAnimate);
 		};
 		doAnimate();
 	}
 
-	removeList(){
+	removeList() {
 		document.removeEventListener('click', this.calcSpeed);
 		this.added = false;
 	}
 
 	calcSpeed(event) {
-			this.calcSinCos();
-			this.player.removeFromScene(this.scene);
-			let coor = this.player.getPosition();
-			let food = new Ball({x: coor.x, z: coor.z, r: 7, color: 'green'});
-			food.draw(this.scene);
-			food.changeSpeed(-this.Sin, -this.Cos);
-			this.dots.push(food);
-			let r = this.player.getR().r - 5;
-			if(!this.checkExist(r, -1).bool) {
-				this.player = new Ball({x: coor.x, z: coor.z, r: r, color: 'blue'});
-				this.player.draw(this.scene);
-				this.player.changeSpeed(this.Sin, this.Cos);
-			} else {
-				this.pointerLock.gameOver();
-			}
+		this.calcSinCos();
+		this.player.removeFromScene(this.scene);
+		let coor = this.player.getPosition();
+		let food = new Ball({x: coor.x, z: coor.z, r: 7, color: 'green'});
+		food.draw(this.scene);
+		food.changeSpeed(-this.Sin, -this.Cos);
+		this.dots.push(food);
+		let r = this.player.getR().r - 5;
+		if (!this.checkExist(r, -1).bool) {
+			this.player = new Ball({x: coor.x, z: coor.z, r: r, color: 'blue'});
+			this.player.draw(this.scene);
+			this.player.changeSpeed(this.Sin, this.Cos);
+		} else {
+			this.stopAnimation();
+			this.pointerLock.gameOver(this.setNullScene.bind(this));
+		}
 	}
 
 	calcSinCos() {
@@ -188,7 +189,7 @@ export default class DGame {
 				let speed1 = this.dots[k].getSpeed();
 				if (newCheckDotR > checkDotR.r) {
 					if (k === this.dots.length - 1) {
-						if(newCheckDotR > 50){
+						if (newCheckDotR > 50) {
 							this.plural *= this.factor;
 						}
 						this.dots[k] = new Ball({
@@ -196,7 +197,7 @@ export default class DGame {
 							r: newCheckDotR + this.plural, color: 'blue'
 						});
 						this.score += 1;
-						if(newCheckDotR + 1 - this.r > 10){
+						if (newCheckDotR + 1 - this.r > 10) {
 							this.camera.increaseRCam();
 							this.r += 15;
 						}
@@ -216,7 +217,7 @@ export default class DGame {
 						this.dots[j].draw(this.scene);
 					}
 				} else {
-					if(newCheckDotR > 50){
+					if (newCheckDotR > 50) {
 						this.plural *= this.factor;
 					}
 					this.dots[j] = new Ball({
@@ -225,7 +226,7 @@ export default class DGame {
 					});
 					this.dots[j].draw(this.scene);
 					let newk = this.checkExist(newCheckDotR - 1, k);
-					if(k === newk.k) {
+					if (k === newk.k) {
 						if (k === this.dots.length - 1) {
 							this.dots[k] = new Ball({
 								x: newCheckDotCoor.x | 0, z: newCheckDotCoor.z | 0, vx: speed1.vx, vz: speed1.vz,
@@ -236,31 +237,34 @@ export default class DGame {
 								this.camera.decreaseRCam();
 								this.r -= 15;
 							}
-						} else if(newk.bool){
-							this.pointerLock.gameOver();
+						} else if (newk.bool) {
+							this.stopAnimation();
+							this.pointerLock.gameOver(this.setNullScene.bind(this));
 						} else {
 							this.dots[k] = new Ball({
 								x: newCheckDotCoor.x | 0, z: newCheckDotCoor.z | 0, vx: speed1.vx, vz: speed1.vz,
 								r: newCheckDotR - 1
 							});
 						}
-						this.dots[k].draw(this.scene);
+						if(!newk.bool) {
+							this.dots[k].draw(this.scene);
+						}
 					}
 				}
-				if(this.dots.length < 20){
+				if (this.dots.length < 20) {
 					this.addOneMore();
 				}
 			}
 		}
 	}
 
-	checkExist(R, k){
+	checkExist(R, k) {
 		let boolResult = false;
-		if(R < 5){
-			if(k == -1){
+		if (R < 5) {
+			if (k == -1) {
 				boolResult = true;
 			}
-			if(k === this.dots.length - 1){
+			if (k === this.dots.length - 1) {
 				this.dots.pop();
 				boolResult = true;
 			} else {
@@ -273,7 +277,7 @@ export default class DGame {
 		}
 		return {
 			k: k,
-			bool : boolResult
+			bool: boolResult
 		};
 	}
 
@@ -281,31 +285,48 @@ export default class DGame {
 		this.rendrer.render(this.scene, this.camera.getCamera());
 	}
 
-	setScore(){
+	setScore() {
 		this.scoreLable.innerHTML = 'Score: ' + this.score;
 		this.divCont.appendChild(this.scoreLable);
 	}
 
-	fillField(){
-		for(let i = 0; i < 20 ; ++i) {
-			let randsphere = new Ball({x: this.random(-1000, 1000), y: 0, z: this.random(-1000, 1000),
-				vx: this.random(-30, 30), vz: this.random(-30, 30), r: this.random(10, 100)});
+	fillField() {
+		for (let i = 0; i < 20; ++i) {
+			let randsphere = new Ball({
+				x: this.random(-1000, 1000), y: 0, z: this.random(-1000, 1000),
+				vx: this.random(-30, 30), vz: this.random(-30, 30), r: this.random(10, 100)
+			});
 			randsphere.draw(this.scene);
 			this.dots.push(randsphere);
 		}
 	}
 
-	addOneMore(){
+	addOneMore() {
 		let buffer = this.dots.pop();
-		let randsphere = new Ball({x: this.random(-1000, 1000), y: 0, z: this.random(-1000, 1000),
-			vx: this.random(-30, 30), vz: this.random(-30, 30), r: this.random(10, 70)});
+		let randsphere = new Ball({
+			x: this.random(-1000, 1000), y: 0, z: this.random(-1000, 1000),
+			vx: this.random(-30, 30), vz: this.random(-30, 30), r: this.random(10, 70)
+		});
 		randsphere.draw(this.scene);
 		this.dots.push(randsphere);
 		this.dots.push(buffer);
 	}
 
-	random(min, max)
-	{
+	setNullScene() {
+		for(let i = 0 ; i < 19; ++i){
+			this.dots[i].removeFromScene(this.scene);
+		}
+		this.scene = null;
+		this.camera = null;
+		this.light = null;
+		this.divCont.removeChild(this.scoreLable);
+	}
+
+	stopAnimation() {
+		cancelAnimationFrame(this.animation);
+	}
+
+	random(min, max) {
 		return Math.random() * (max - min) + min;
 	}
 

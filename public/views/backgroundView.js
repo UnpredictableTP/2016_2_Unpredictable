@@ -37,6 +37,7 @@ export default class backgroundView extends View {
 
 	pause() {
 		this._background.stop();
+		this._background.stopAnimation();
 		this.canvas.hidden = true;
 	}
 
