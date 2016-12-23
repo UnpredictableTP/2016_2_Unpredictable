@@ -4,7 +4,8 @@ import '../css/sign.scss';
 import View from '../modules/view';
 import template from '../templates/sign.tmpl.xml';
 import '../components/input/input.scss';
-
+import Preloader from '../components/preloader';
+import Block from '../components/block/block';
 
 export default class SignView extends View {
 	/**
@@ -57,6 +58,13 @@ export default class SignView extends View {
 	 * Обработчик нажатия на кнопку Sign in
 	 */
 	handleSignIn(e) {
+		let div = document.querySelector('.signin');
+		this.load = new Block('div', {});
+		this.load._get().classList.add('preload_small');
+		div.appendChild(this.load._get());
+		this.preload = new Preloader();
+		this.signupSubmit.disabled = true;
+
 		this.clearInputErrors();
 		e.preventDefault();
 		const formdata = {
@@ -68,10 +76,15 @@ export default class SignView extends View {
 
 		this._user.signin(formdata)
 			.then(() => {
+				this.preload.setHide(this.load._get(), true);
+				div.removeChild(this.load._get());
+				this.signupSubmit.disabled = false;
 				this.router.go('/app');
 			}).catch((errors) => {
+			this.preload.setHide(this.load._get(), true);
+			div.removeChild(this.load._get());
+			this.signupSubmit.disabled = false;
 			for (let key in errors) {
-				debugger;
 				this.inErrors[key].innerText = errors[key];
 			}
 			console.log('There are some errors in your data, check them and try one more time');
@@ -83,6 +96,13 @@ export default class SignView extends View {
 	 * Обработчик нажатия на кнопку Sign up
 	 */
 	handleSignUp(e) {
+		let div = document.querySelector('.signup');
+		this.load = new Block('div', {});
+		this.load._get().classList.add('preload_small');
+		div.appendChild(this.load._get());
+		this.preload = new Preloader();
+		this.signinSubmit.disabled = true;
+
 		this.clearInputErrors();
 		e.preventDefault();
 		const formdata = {
@@ -98,10 +118,14 @@ export default class SignView extends View {
 
 		this._user.signup(formdata)
 			.then(() => {
+				this.preload.setHide(this.load._get(), true);
+				div.removeChild(this.load._get());
+				this.signinSubmit.disabled = false;
 				this.router.go('/app');
-				debugger;
 			}).catch((errors) => {
-			console.log(errors);
+			this.preload.setHide(this.load._get(), true);
+			div.removeChild(this.load._get());
+			this.signinSubmit.disabled = false;
 			for (let key in errors) {
 				this.upErrors[key].innerText = errors[key];
 			}

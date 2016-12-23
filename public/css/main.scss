@@ -77,6 +77,19 @@ body {
 		background-size: 143px;
 	}
 
+	.preload_small {
+		display: block;
+		position: absolute;
+		z-index: 99999;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0.5;
+		background: #404040 url(http://hello-site.ru//main/images/preloads/circles.svg) center center no-repeat;
+		background-size: 143px;
+	}
+
 	.js-button1 {
 		position: absolute;
 		top: 40%;
