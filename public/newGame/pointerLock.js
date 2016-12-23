@@ -3,7 +3,7 @@
 import Block from '../components/block/block';
 
 export default class pointerLock{
-	constructor(rendrer, camera, removeList, goBack, reGo){
+	constructor(rendrer, camera, removeList, goBack, reGo, stopAnimation, animate){
 		this.lockChangeAlert = this.lockChangeAlert.bind(this);
 		this.oldPosition = 0;
 		this.locked = false;
@@ -12,12 +12,17 @@ export default class pointerLock{
 		this.removeList = removeList;
 		this.goBack = goBack;
 		this.reGo = reGo;
+		this.stopAnimation = stopAnimation;
+		this.animate = animate;
 		this.first = true;
 		this.notPause = false;
+		this.backActive = false;
 		this.contButton = new Block('div', {});
 		this.continue = this.contButton._get();
 		this.exitButton = new Block('div', {});
 		this.exit = this.exitButton._get();
+		this.back = new Block('div', {});
+
 		this.setPauseMenu();
 
 		this.continue.requestPointerLock = this.continue.requestPointerLock || this.canvas.mozRequestPointerLock;
@@ -65,14 +70,18 @@ export default class pointerLock{
 		this.divCont = document.querySelector('.js-play');
 		if(!this.first) {
 			this.continue.classList.add('button');
-			this.continue.classList.add('js-button1');
+			this.continue.classList.add('js-button2');
 			this.continue.innerHTML = 'Continue';
 			this.exit.classList.add('button');
-			this.exit.classList.add('js-button2');
+			this.exit.classList.add('js-button1');
 			this.exit.innerHTML = 'Exit';
+			this.back._get().classList.add('gamebackground');
+			this.divCont.appendChild(this.back._get());
+			this.backActive = true;
+			this.stopAnimation();
 		} else {
 			this.continue.classList.add('button');
-			this.continue.classList.add('js-button1');
+			this.continue.classList.add('js-button2');
 			this.continue.innerHTML = 'Click to start playing';
 			this.first = false;
 		}
@@ -82,16 +91,21 @@ export default class pointerLock{
 	}
 
 	destroy(){
+		this.animate();
 		this.locked = true;
 		this.continue.removeEventListener('click', this.destroy);
 		this.continue.innerHTML = '';
 		this.continue.classList.remove('button');
-		this.continue.classList.remove('js-button1');
+		this.continue.classList.remove('js-button2');
 		this.exit.removeEventListener('click', this.goBack);
 		this.exit.innerHTML = '';
 		this.exit.classList.remove('button');
 		this.exit.classList.remove('js-button1');
-
+		if(this.backActive) {
+			this.back._get().classList.remove('gamebackground');
+			this.divCont.removeChild(this.back._get());
+			this.backActive = false;
+		}
 		this.continue.requestPointerLock();
 	}
 
@@ -104,15 +118,23 @@ export default class pointerLock{
 		this.continue.addEventListener('click', tryOneMore);
 		this.continue.innerHTML = "Try again";
 		this.continue.classList.add('button');
-		this.continue.classList.add('js-button1');
+		this.continue.classList.add('js-button2');
 		this.exit.classList.add('button');
-		this.exit.classList.add('js-button2');
+		this.exit.classList.add('js-button1');
 		this.exit.innerHTML = 'Exit';
 		document.removeEventListener("mousemove", this.updatePosition, false);
 		this.gameover = new Block('div', {});
-		this.gameover._get().innerHTML = "Game Over. Would you like to try again?";
-		this.gameover._get().classList.add('js-button2');
+		this.gameover._get().innerHTML = "Game Over.";
+		this.gameover._get().classList.add('gameover');
+		this.restart = new Block('div', {});
+		this.restart._get().innerHTML = "Would you like to try again?";
+		this.restart._get().classList.add('restart');
+		this.back = new Block('div', {});
+		this.back._get().classList.add('gamebackground');
+		this.backActive = false;
+		this.divCont.appendChild(this.back._get());
 		this.divCont.appendChild(this.gameover._get());
+		this.divCont.appendChild(this.restart._get());
 		this.divCont.appendChild(this.continue);
 		this.divCont.appendChild(this.exit);
 	}
@@ -121,14 +143,16 @@ export default class pointerLock{
 		this.continue.removeEventListener('click', this.tryOneMore);
 		this.continue.innerHTML = '';
 		this.continue.classList.remove('button');
-		this.continue.classList.remove('js-button1');
+		this.continue.classList.remove('js-button2');
 		this.exit.removeEventListener('click', this.goBack);
 		this.exit.innerHTML = '';
 		this.exit.classList.remove('button');
 		this.exit.classList.remove('js-button1');
+		this.back._get().classList.remove('gamebackground');
+		this.divCont.removeChild(this.restart._get());
 		this.divCont.removeChild(this.gameover._get());
+		this.divCont.removeChild(this.back._get());
 		this.setNullScene();
-		debugger;
 		this.reGo();
 	}
 }

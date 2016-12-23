@@ -79,16 +79,56 @@ body {
 
 	.js-button1 {
 		position: absolute;
-		top: 20px;
-		right: 20px;
+		top: 40%;
+		right: 25%;
 		z-index: 2;
+
 	}
 
 	.js-button2 {
 		position: absolute;
-		top: 20px;
-		left: 20px;
+		top: 40%;
+		left: 25%;
 		z-index: 2;
+	}
+
+	.score{
+		position: absolute;
+		top: 2%;
+		right: 2%;
+		z-index: 2;
+		font-weight: 900;
+		font-size: 120%;
+	}
+
+	.gameover{
+		position: absolute;
+		top: 25%;
+		left : 40%;
+		z-index: 2;
+		font-weight: 900;
+		font-size: 120%;
+		text-align: center;
+	}
+
+	.restart{
+		position: absolute;
+		top: 30%;
+		left : 40%;
+		z-index: 2;
+		font-weight: 900;
+		font-size: 120%;
+		text-align: center;
+	}
+
+	.gamebackground{
+		background-color: #404040;
+		opacity: 0.5;
+		position : absolute;
+		top : 0%;
+		bottom : 0%;
+		left : 0%;
+		right : 0%
 	}
 
 }

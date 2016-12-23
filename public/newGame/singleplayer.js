@@ -28,7 +28,7 @@ export default class DGame {
 		this.divCont = document.querySelector('.js-play');
 		this.scoreDiv = new Block('div', {});
 		this.scoreLable = this.scoreDiv._get();
-		this.scoreLable.classList.add('js-button1');
+		this.scoreLable.classList.add('score');
 
 		element.appendChild(this.rendrer.domElement);
 		this.key.init();
@@ -36,7 +36,8 @@ export default class DGame {
 		this.camera = new Camera({x: 0, y: 100, z: 300});
 		this.camera.setCamera(this.width, this.height);
 
-		this.pointerLock = new pointerLock(this.rendrer, this.camera, this.removeList.bind(this), goBack, reGo);
+		this.pointerLock = new pointerLock(this.rendrer, this.camera, this.removeList.bind(this), goBack, reGo,
+		this.stopAnimation.bind(this), this.animate.bind(this));
 
 		this.scene = new THREE.Scene();
 
@@ -305,7 +306,7 @@ export default class DGame {
 		let buffer = this.dots.pop();
 		let randsphere = new Ball({
 			x: this.random(-1000, 1000), y: 0, z: this.random(-1000, 1000),
-			vx: this.random(-30, 30), vz: this.random(-30, 30), r: this.random(10, 70)
+			vx: this.random(-30, 30), vz: this.random(-30, 30), r: this.random(10, 60)
 		});
 		randsphere.draw(this.scene);
 		this.dots.push(randsphere);
