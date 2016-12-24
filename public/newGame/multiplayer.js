@@ -53,7 +53,7 @@ export default class DGame {
 		for(let i = 0; i < content.players.length; ++i){
             let body = content.players[i].playerSquare.partSnaps[0].body;
             console.log(body);
-            this.players[i] = new Ball({x: body.x, y: 0, z: body.y, r: this.r, color: 'blue'});
+            this.players[i] = new Ball({x: body.x, y: 0, z: body.y, r: content.players[i].playerSquare.partSnaps[0].radius, color: 'blue'});
             if(this.id === content.players[i].userId) {
 	            this.position = i;
 	            this.camera = new Camera({x: body.x, y: 100, z: body.y + 300});
@@ -64,7 +64,14 @@ export default class DGame {
             this.players[i].draw(this.scene);
 		}
 
-        this.pointerLock = new pointerLock(this.rendrer, this.camera,  this.removeList.bind(this), this.goBack, this.rego);
+		for(let j = 0; j < content.gameStatics.length; j++){
+			this.dots[j] = new Ball({x: content.gameStatics[j].coords.x, y: 0, z: content.gameStatics[j].coords.y,
+				r: content.gameStatics[j].radius, color: 'green'});
+            this.dots[j].draw(this.scene);
+        }
+
+        this.pointerLock = new pointerLock(this.rendrer, this.camera,  this.removeList.bind(this), this.goBack, this.rego,
+			this.stopAnimation.bind(this), this.animateCamera.bind(this));
 
         this.grid = new THREE.GridHelper(2000, 50, 'grey', 'grey');
 		this.scene.add(this.grid);
@@ -84,11 +91,16 @@ export default class DGame {
 		//console.log(content, this.id);
 		for(let i = 0; i < content.players.length; ++i){
             let body = content.players[i].playerSquare.partSnaps[0].body;
-            this.players[i].updateCoor({x: body.x, z: body.y});
+            if(content.players[i].playerSquare.partSnaps[0].touch !== 0){
+                this.redraw(i, content);
+            } else {
+                this.players[i].updateCoor({x: body.x, z: body.y});
+            }
             if(this.id === this.players[i].userId) {
             	console.log(body);
                 this.players[i].setCamera(this.camera.getCamera());
             }
+
         }
 		// this.sphere.decreaseR(this.scene);
 		// this.checkR();
@@ -154,7 +166,8 @@ export default class DGame {
                 button: 's',
                 time: time
             });
-            this.socket.send();		}
+            this.socket.send();
+		}
 		if (this.key.is('a') || this.key.is('ф')) {
 			this.calcSinCos();
             this.socket.prepareMessage({
@@ -163,7 +176,8 @@ export default class DGame {
                 button: 'a',
                 time: time
             });
-            this.socket.send();		}
+            this.socket.send();
+		}
 		if (this.key.is('d') || this.key.is('в')) {
             this.calcSinCos();
             this.socket.prepareMessage({
@@ -172,9 +186,16 @@ export default class DGame {
                 button: 'd',
                 time: time
             });
-            this.socket.send();		}
+            this.socket.send();
+		}
 		if (this.key.is(' ')) {
-			this.players[this.id].increaseR(this.scene);
+            this.socket.prepareMessage({
+                sin: this.Sin,
+                cos: this.Cos,
+                button: 'space',
+                time: time
+            });
+            this.socket.send();
 		}
 		// let coordinates = this.camera.getPosition();
 		// let ballCoordinates = this.players[this.id].getPosition();
@@ -199,6 +220,16 @@ export default class DGame {
 		// 		this.dots[i].redraw(this.scene, 'red');
 		// 	}
 		// }
+	}
+
+	redraw(i, content){
+		this.players[i].removeFromScene(this.scene);
+        let body = content.players[i].playerSquare.partSnaps[0].body;
+        this.players[i] = new Ball({x: body.x, y: 0, z: body.y, r: content.players[i].playerSquare.partSnaps[0].radius, color: 'blue'});
+        if(this.id === content.players[i].userId) {
+            this.players[i].setCamera(this.camera.getCamera());
+        }
+        this.players[i].draw(this.scene);
 	}
 
 	stopAnimation() {
