@@ -11,7 +11,6 @@
     "start": "./node_modules/.bin/webpack && node server.js",
     "webpack": "webpack --display-error-details"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/frontend-park-mail-ru/2016_2_Unpredictable.git"

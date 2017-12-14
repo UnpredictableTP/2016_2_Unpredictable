@@ -15,6 +15,7 @@ export default class SignView extends View {
 	 * @param {String} host - базовый хост бекенда
 	 */
 	constructor(tag, {user, host}) {
+		console.log("SignView constructor");
 		super('js-group');
 		this._user = user;
 		this._el.innerHTML = template();
@@ -58,6 +59,7 @@ export default class SignView extends View {
 	 * Обработчик нажатия на кнопку Sign in
 	 */
 	handleSignIn(e) {
+		console.log("SignView handleSignIn");
 		let div = document.querySelector('.signin');
 		this.load = new Block('div', {});
 		this.load._get().classList.add('preload_small');
@@ -96,6 +98,7 @@ export default class SignView extends View {
 	 * Обработчик нажатия на кнопку Sign up
 	 */
 	handleSignUp(e) {
+		console.log("SignView handleSignUp");
 		let div = document.querySelector('.signup');
 		this.load = new Block('div', {});
 		this.load._get().classList.add('preload_small');
@@ -135,6 +138,7 @@ export default class SignView extends View {
 	}
 
 	clearInputErrors() {
+		console.log("SignView clearInputErrors");
 		for (const key in this.inErrors) {
 			this.inErrors[key].innerText = '';
 		}

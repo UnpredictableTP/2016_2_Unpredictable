@@ -4,6 +4,7 @@ import Block from '../components/block/block';
 
 export default class pointerLock{
 	constructor(rendrer, camera, removeList, goBack, reGo, stopAnimation, animate){
+		console.log("pointerLock constructor");
 		this.lockChangeAlert = this.lockChangeAlert.bind(this);
 		this.oldPosition = 0;
 		this.locked = false;
@@ -22,6 +23,7 @@ export default class pointerLock{
 		this.exitButton = new Block('div', {});
 		this.exit = this.exitButton._get();
 		this.back = new Block('div', {});
+		this.isgameover = false;
 
 		this.setPauseMenu();
 
@@ -35,6 +37,7 @@ export default class pointerLock{
 	}
 
 	lockChangeAlert() {
+		console.log("pointerLock lockChangeAlert");
 		if (document.pointerLockElement === this.continue ||
 			document.mozPointerLockElement === this.continue) {
 			console.log('The pointer lock status is now locked');
@@ -61,14 +64,17 @@ export default class pointerLock{
 	}
 
 	updatePosition(mousePosition) {
+		console.log("pointerLock updatePosition");
 		let coordinates = this.camera.getPosition();
 		let d = mousePosition.movementX - this.oldPosition;
 		this.camera.countCircle(d);
 	}
 
 	setPauseMenu(){
+		console.log("pointerLock setPauseMenu");
 		this.divCont = document.querySelector('.js-play');
 		if(!this.first) {
+			debugger;
 			this.continue.classList.add('button');
 			this.continue.classList.add('js-button2');
 			this.continue.innerHTML = 'Continue';
@@ -89,8 +95,12 @@ export default class pointerLock{
 		this.divCont.appendChild(this.continue);
 		this.divCont.appendChild(this.exit);
 	}
+	
+
+
 
 	destroy(){
+		console.log("pointerLock destroy");
 		this.animate();
 		this.locked = true;
 		this.continue.removeEventListener('click', this.destroy);
@@ -109,7 +119,48 @@ export default class pointerLock{
 		this.continue.requestPointerLock();
 	}
 
+	destroyGameOver(){
+		console.log("pointerLock destroy");
+		this.locked = true;
+		this.animate();
+		this.continue.removeEventListener('click', this.destroy);
+		this.continue.innerHTML = '';
+		this.continue.classList.remove('button');
+		this.continue.classList.remove('js-button2');
+		this.exit.removeEventListener('click', this.goBack);
+		this.exit.innerHTML = '';
+		this.exit.classList.remove('button');
+		this.exit.classList.remove('js-button1');
+
+
+		debugger;
+		// console.log('hello---------------------------------------------------------------------------------------------------------------------------');
+		if(this.isgameover === true){
+			this.gameover._get().innerHTML = '';
+			this.gameover._get().classList.remove('gameover');
+			this.restart._get().innerHTML = '';
+			this.restart._get().classList.remove('restart');
+			this.back._get().classList.remove('gamebackground');
+			this.divCont.removeChild(this.gameover._get());
+			this.divCont.removeChild(this.restart._get());
+			this.isgameover = false
+		}
+
+		if(this.backActive) {
+			this.back._get().classList.remove('gamebackground');
+			this.divCont.removeChild(this.back._get());
+			this.backActive = false;
+		}
+		// this.continue.requestPointerLock();
+		this.locked = false;
+		window.hell = false;
+
+		// document.addEventListener('pointerlockchange', this.lockChangeAlert, false);
+		// document.addEventListener('mozpointerlockchange', this.lockChangeAlert, false);
+	}
+
 	gameOver(setNullScene){
+		console.log("pointerLock gameOver");
 		document.exitPointerLock();
 		this.notPause = true;
 		this.removeList();
@@ -132,6 +183,7 @@ export default class pointerLock{
 		this.back = new Block('div', {});
 		this.back._get().classList.add('gamebackground');
 		this.backActive = false;
+		this.isgameover = true;
 		this.divCont.appendChild(this.back._get());
 		this.divCont.appendChild(this.gameover._get());
 		this.divCont.appendChild(this.restart._get());
@@ -140,6 +192,7 @@ export default class pointerLock{
 	}
 
 	tryOneMore() {
+		console.log("pointerLock tryOneMore");
 		this.continue.removeEventListener('click', this.tryOneMore);
 		this.continue.innerHTML = '';
 		this.continue.classList.remove('button');

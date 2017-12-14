@@ -9,7 +9,9 @@ import './signForm.scss';
 
 export default class SignForm extends Form {
 	constructor(options) {
+		console.log("SignForm constructor");
 		super(options);
+		debugger;
 		this._header1 = new Block('h3', {});
 		this._header1._get().innerText = `Log In`;
 		this._loginBlock = new Block('div', {});
@@ -63,6 +65,7 @@ export default class SignForm extends Form {
 	// TODO комментарии в стиле JSDoc
 
 	onSignup(callback, options = {}) {
+		console.log("MainForm onSignup");
 		this._upButton.on('click', function (button) {
 			button.preventDefault();
 			// options.clearErrors();
@@ -71,6 +74,7 @@ export default class SignForm extends Form {
 	}
 
 	onSignin(callback, options = {}) {
+		console.log("MainForm onSignin");
 		this._inButton.on('click', function (e) {
 			e.preventDefault();
 			const body = {
@@ -98,6 +102,7 @@ export default class SignForm extends Form {
 	}
 
 	clearInputErrors() {
+		console.log("MainForm clearInputErrors");
 		for (const key in this.errors) {
 			this.errors[key]._get().innerText = '';
 		}

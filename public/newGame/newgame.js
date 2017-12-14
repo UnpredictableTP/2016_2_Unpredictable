@@ -11,6 +11,7 @@ var THREE = THREELib(); // return THREE JS
 
 export default class DGame {
 	constructor() {
+		console.log("XDGame constructor");
 		this.width = 1200;
 		this.height = 800;
 
@@ -30,6 +31,7 @@ export default class DGame {
 
 
 	init(element) {
+		console.log("XDGame init");
 		element.appendChild(this.rendrer.domElement);
 
 		this.camera = new Camera({x: 0, y: 200, z: 300});
@@ -78,6 +80,7 @@ export default class DGame {
 	}
 
 	animate() {
+		console.log("XDGame animate");
 		let date = Date.now();
 		let doAnimate = () => {
 			let localdate = Date.now();
@@ -105,6 +108,7 @@ export default class DGame {
 	}
 
 	calcSpeed(event) {
+		console.log("XDGame calcSpeed");
 		this.calcSinCos();
 		this.dots[this.i].removeFromScene(this.scene);
 		let coor = this.dots[this.i].getPosition();
@@ -124,6 +128,7 @@ export default class DGame {
 	}
 
 	calcSinCos() {
+		console.log("XDGame calcSinCos");
 		let coordinates = this.camera.getPosition();
 		let sum = Math.sqrt(coordinates.z ** 2 + coordinates.x ** 2);
 		this.Sin = coordinates.x / sum;
@@ -131,6 +136,7 @@ export default class DGame {
 	}
 
 	doKeys() {
+		console.log("XDGame DoKeys");
 		if (this.key.is('w') || this.key.is('ц')) {
 			this.calcSinCos();
 			this.dots[this.i].moveForward(this.Sin, this.Cos);
@@ -164,6 +170,7 @@ export default class DGame {
 
 
 	checkR() {
+		console.log("XDGame CheckR");
 		let i;
 		let check = this.dots[this.i].getR().r;
 		for (i = 0; i < this.dots.length - 1; ++i) {

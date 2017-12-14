@@ -2,6 +2,7 @@
 
 export default class KeyMaster {
 	constructor() {
+		console.log("KeyMaster constructor");
 		this.keys = {};
 
 		this._onPress = this._keyHandler.bind(this, 'down');
@@ -9,11 +10,13 @@ export default class KeyMaster {
 	}
 
 	init() {
+		console.log("KeyMaster init");
 		document.addEventListener('keypress', this._onPress);
 		document.addEventListener('keyup', this._onUp);
 	}
 
 	destroy() {
+		console.log("KeyMaster destory");
 		document.removeEventListener('keypress', this._onPress);
 		document.removeEventListener('keyup', this._onUp);
 	}
@@ -24,6 +27,7 @@ export default class KeyMaster {
 	}
 
 	_keyHandler(action, event) {
+		console.log("KeyMaster _keyHandler");
 		// console.log(action, event);
 		let key = event.key;
 		this.keys[key] = action === 'down';

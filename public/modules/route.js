@@ -13,6 +13,7 @@ export default class Route {
 	 * @param {Object} [options={}] - Дополнительные параметры, которые будут переданы во view при её создании и инициализации
 	 */
 	constructor(pathname, view, options = {}) {
+		console.log("Route constructor");
 		// TODO: Сущий адище, нам нужно менеджерить депсы
 
 		this.id = 'p' + id;
@@ -38,8 +39,11 @@ export default class Route {
 	 * @param {Object} [state={}] - Объект state, который был передан в событие popstate для объекта window
 	 */
 	navigate(pathname, state = {}) {
+		console.log("Route navigate");
 		state = state || {};
 		const keys = this.regex(pathname);
+		console.log(this._view);
+		debugger;
 		if (!this._view) {
 			const view = new this.View('', this.options);
 			view.setRouter(this.__router);
@@ -53,6 +57,7 @@ export default class Route {
 	 * Деактивирует текущий Route
 	 */
 	leave() {
+		console.log("Route levae");
 		if (this._view) {
 			this._view.pause();
 		}

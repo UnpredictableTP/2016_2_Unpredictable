@@ -8,6 +8,7 @@ export default class Router {
 	 * Создаёт новый роутер или возвращает уже созданный инстанс
 	 */
 	constructor() {
+		console.log("Router constructor");
 		if (Router.__instance) {
 			return Router.__instance;
 		}
@@ -29,6 +30,7 @@ export default class Router {
 	 * @returns {Router}
 	 */
 	addRoute(pathname, view, options = {}) {
+		console.log("Router addRoute");
 		const route = new Route(pathname, view, options);
 		route.setRouter(this);
 		this.routes.push(route);
@@ -40,6 +42,7 @@ export default class Router {
 	 * @param {Object} [state={}] - Объект state, который передаётся в первый вызов onroute
 	 */
 	start(state = {}, options) {
+		console.log("Router start");
 		window.onpopstate = (event) => {
 			const status = event.state;
 			const pathname = window.location.pathname;
@@ -59,11 +62,11 @@ export default class Router {
 	 * @param {Object} [state={}] - Объект state, который передаётся в вызов метода navigate
 	 */
 	onroute(pathname, state = {}) {
+		console.log("Router onroute");
 		const route = this.routes.find(r => r.match(pathname));
 		if (!route) {
 			return;
 		}
-
 		if (this.activeRoute) {
 			this.activeRoute.leave();
 		}
@@ -78,6 +81,7 @@ export default class Router {
 	 * @param {Object} [state={}] - Объект state, который передаётся в вызов history.pushState
 	 */
 	go(pathname, state = {}) {
+		console.log("Router go");
 		if (!this.started) {
 			return;
 		}
@@ -94,6 +98,7 @@ export default class Router {
 	 * @param {Object} history - должен предоставлять реализацию методов back(), forward(), pushState()
 	 */
 	setHistory(history) {
+		console.log("Router setHistory");
 		this.history = history;
 	}
 

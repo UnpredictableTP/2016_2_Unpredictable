@@ -1,8 +1,8 @@
 'use strict';
 
-
 export default class User {
 	constructor() {
+		console.log("User constructor");
 		this.info = {
 			login: null,
 			score: null
@@ -11,6 +11,7 @@ export default class User {
 	}
 
 	validateLogin(login) {
+		console.log("User validateLogin");
 		if (!login || login.length === 0) {
 			return {
 				errorText: 'Login shouldn\'t be empty',
@@ -25,6 +26,7 @@ export default class User {
 	}
 
 	validatePassword(password, repeat = null) {
+		console.log("User validatePassword");
 		if (!password || password.length === 0) {
 			return {
 				errorText: 'Passwords shouldn\'t be empty',
@@ -39,6 +41,7 @@ export default class User {
 	}
 
 	checkRepeat(password, repeat = null) {
+		console.log("User checkRepeat");
 		if (repeat && repeat !== password) {
 			return {
 				errorText: 'Passwords are not equals',
@@ -48,6 +51,7 @@ export default class User {
 	}
 
 	validate() {
+		console.log("User validate");
 		const isLoginValid = this.validateLogin(this.info.login);
 		const isPasswordValid = this.validatePassword(this.info.password);
 		const isRepeat = this.checkRepeat(this.info.password, this.info.repeat);
@@ -68,6 +72,7 @@ export default class User {
 	}
 
 	signin({login, password}) {
+		console.log("User signin");
 		this.info.login = login;
 		this.info.password = password;
 		this.validate();
@@ -96,6 +101,7 @@ export default class User {
 	}
 
 	signup({login, name, email, password, passwordRepeat}, errors) {
+		console.log("User signup");
 		this.info.login = login;
 		this.info.name = name;
 		this.info.email = email;
@@ -147,6 +153,7 @@ export default class User {
 	}
 
 	logout() {
+		console.log("User logout");
 		return fetch(this.host + 'api/sessions', {
 			credentials: 'include',
 			method: 'DELETE',
@@ -182,6 +189,7 @@ export default class User {
 	}
 
 	checkAuth() {
+		console.log("User checkAuth");
 		return fetch(this.host + 'api/auth', {
 			credentials: 'include',
 			method: 'GET',
@@ -197,6 +205,7 @@ export default class User {
 	}
 
 	setHost(host) {
+		console.log("User setHost");
 		this.host = host;
 	}
 }

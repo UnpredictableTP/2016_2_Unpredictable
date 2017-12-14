@@ -7,6 +7,7 @@ import './mainForm.scss';
 
 export default class MainForm extends Form {
 	constructor(options) {
+		console.log("MainForm constructor");
 		super(options);
 		this._header = new Block('h1', {
 			attrs: {

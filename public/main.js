@@ -13,7 +13,6 @@ import SinglePlayView from './views/singleplayerView';
 import MultiPlayView from './views/multiplayerView';
 import Preloader from './components/preloader'
 
-
 // const serviceWorker = function () {
 //
 // 	if (!navigator.serviceWorker) {
@@ -30,7 +29,7 @@ import Preloader from './components/preloader'
 // 		throw new Error('ServiceWorker error: ' + err);
 // 	});
 // };
-
+console.log("Main");
 const options = {
 	user: new User(),
 	host: 'http://localhost:8080/',
@@ -44,7 +43,9 @@ options.user.setHost(options.host);
 
 
 const eventListener = function (event) {
+	console.log("Main eventListener");
 	const el = event.target;
+	console.log(event.target);
 	if (el.tagName === 'A' && (el.getAttribute('data-nav') || el.getAttribute('href'))) {
 		const url = el.getAttribute('data-nav') || el.getAttribute('href');
 		if (el.target !== '_blank' && el.target !== '_self') {
@@ -57,10 +58,12 @@ const eventListener = function (event) {
 		}
 	}
 };
+
 const preloader = document.getElementById('preload');
 // let preloader = document.getElementsByClassName("preload");
 
 window.onload = function () {
+	console.log("Main onload");
 	this.preload = new Preloader();
 	this.preload.init(preloader);
 	this.preloader = preloader;
@@ -73,7 +76,6 @@ window.onload = function () {
 		new Router().go('/');
 		checked = true;
 	});
-
 };
 
 window.addEventListener('click', eventListener);
@@ -81,6 +83,7 @@ window.addEventListener('tap', eventListener);
 
 // TIP: роуты нужно указывать от наиболее специфичного к наименее специфичному
 // З.Ы. чтобы более ранние роуты не были префиксами более поздних ;]
+
 
 (new Router())
 	.addRoute('/sign', SignView, options)

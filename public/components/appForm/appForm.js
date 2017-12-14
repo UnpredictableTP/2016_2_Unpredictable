@@ -8,6 +8,7 @@ import './appForm.scss';
 
 export default class AppForm extends Form {
 	constructor(options, callback) {
+		console.log("AppForm constructor");
 		super(options);
 		this._user = options;
 		this.callback = callback;
@@ -39,6 +40,7 @@ export default class AppForm extends Form {
 	}
 
 	onLogout(event) {
+		console.log("AppForm onLogout");
 		event.preventDefault();
 		this._user.logout()
 			.then(() => {

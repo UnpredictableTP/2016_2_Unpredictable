@@ -5,6 +5,7 @@ import DGame from '../newGame/newgame';
 
 export default class PlayView extends View {
 	constructor(tag, {user, backgroundView}) {
+		console.log("MainView constructor");
 		super('js-play');
 		this._backgroundView = backgroundView;
 		// this.game = new DGame();

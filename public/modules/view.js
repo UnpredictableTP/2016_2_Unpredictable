@@ -9,6 +9,7 @@ export default class View {
 	 * @param {Object} [options={}] - Объект с параметрами
 	 */
 	constructor(tag, options = {}) {
+		console.log("View constructor");
 
 		if (tag && document.querySelector('.' + tag)) {
 			this._el = document.querySelector('.' + tag);
@@ -26,6 +27,7 @@ export default class View {
 	 * @param {Object} [options={}] - Объект с параметрами
 	 */
 	init(options = {}) {
+		console.log("View init");
 		this.setAttrs(options.attrs);
 	}
 
@@ -35,6 +37,7 @@ export default class View {
 	 * @param {Object} [options={}] - Объект с параметрами
 	 */
 	pause(options = {}) {
+		console.log("View pause");
 		this.hide();
 	}
 
@@ -44,6 +47,7 @@ export default class View {
 	 * @param {Object} [options={}] - Объект с параметрами
 	 */
 	resume(options = {}) {
+		console.log("View resume");
 		this.show();
 	}
 
@@ -52,6 +56,7 @@ export default class View {
 	 * @param {Object} [options={}] - Объект с параметрами
 	 */
 	show(options = {}) {
+		console.log("View show");
 		this.__interval = setTimeout(() => {
 			this._el.style = 'opacity:0';
 			this._el.style = 'animation-name: fadeInDown;';
@@ -64,6 +69,7 @@ export default class View {
 	 * @param {Object} [options={}] - Объект с параметрами
 	 */
 	hide(options = {}) {
+		console.log("View hide");
 		if (this.__interval) {
 			clearTimeout(this.__interval);
 			this.__interval = null;
@@ -85,6 +91,8 @@ export default class View {
 	 * @param {HTMLElement} el - HTML-элемент, к которому добавляется элемент текущей view
 	 */
 	appendTo(el) {
+		console.log("View appendTo");
+		debugger;
 		el.appendChild(this._el);
 	}
 
@@ -92,6 +100,7 @@ export default class View {
 	 * Удаляет элемент текущей view
 	 */
 	remove() {
+		console.log("View remove");
 		if (this._el) {
 			this._el.remove();
 		}
@@ -102,6 +111,7 @@ export default class View {
 	 * @param {HTMLElement} el - HTML-элемент, который становится элементом текущей view
 	 */
 	setElement(el) {
+		console.log("View setElement");
 		if (this._el) {
 			this._el.remove();
 		}
@@ -113,7 +123,10 @@ export default class View {
 	 * @param {Object} [attrs={}] - Объект с атрибутами, которые будут установлены у текущего элемента view
 	 */
 	setAttrs(attrs = {}) {
+		console.log("View setAttrs");
 		Object.keys(attrs).forEach(name => {
+			console.log(name + ": " + attrsp[name]);
+			debugger;
 			this._el.setAttribute(name, attrs[name]);
 		});
 	}
@@ -131,6 +144,7 @@ export default class View {
 	 * @param {Router} router - инстанс роутера
 	 */
 	setRouter(router) {
+		console.log("View setRouter");
 		this.router = router;
 	}
 

@@ -9,6 +9,7 @@ export default class Background {
 	 * Конструктор класса
 	 */
 	constructor({ctx, width, height}) {
+		console.log("Background constructor");
 		this.ctx = ctx;
 		this.width = width;
 		this.height = height;
@@ -20,6 +21,7 @@ export default class Background {
 	}
 
 	setSize(width, height) {
+		console.log("Background setSize");
 		this.width = width;
 		this.height = height;
 	}
@@ -30,6 +32,7 @@ export default class Background {
 
 
 	start() {
+		console.log("Background start");
 		// this.ball.draw(this.ctx);
 		this._stopped = false;
 		this.balls.forEach(ball => {
@@ -48,6 +51,7 @@ export default class Background {
 	 * Начинаем движение
 	 */
 	move() {
+		console.log("Background move");
 		let time;
 		const exec = this.exec.bind(this);
 		const self = this;
@@ -77,7 +81,6 @@ export default class Background {
 	 */
 	exec(dt) {
 		this.clear();
-
 		this.balls.forEach(ball => {
 			ball.update(dt);
 			ball.checkRectangleIntersection({
@@ -116,10 +119,12 @@ export default class Background {
 	}
 
 	getRandom(min, max) {
+		console.log("Background getRandom");
 		return ((Math.random() * (max - min)) + min);
 	}
 
 	stopAnimation(){
+		console.log("Background stopAnimation");
 		cancelAnimationFrame(this.animation);
 	}
 }

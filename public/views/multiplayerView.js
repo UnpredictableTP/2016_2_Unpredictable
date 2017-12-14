@@ -7,6 +7,7 @@ import Preloader from '../components/preloader';
 
 export default class SinglePlayView extends View {
 	constructor(tag, user) {
+		console.log("multiplayerView constructor");
 		super('js-play, js-background');
 		let size = user.backgroundView.getSize();
 		this.game = new DGame(size);
@@ -14,10 +15,14 @@ export default class SinglePlayView extends View {
 	}
 
 	init(options = {}) {
-		this.game.initSocket(this.getElement(), this.goBack.bind(this), this.rego.bind(this), this.hidePreload.bind(this));
+		console.log("multiplayerView init");
+		// this.game.initSocket(this.getElement(), this.goBack.bind(this), this.rego.bind(this), this.hidePreload.bind(this));
 	}
 
 	resume(){
+		console.log("multiplayerView resume");
+		this.game.initSocket(this.getElement(), this.goBack.bind(this), this.rego.bind(this), this.hidePreload.bind(this));
+
 		const preloader = document.getElementById('preload');
 		this.preload = new Preloader();
 		this.preload.init(preloader);
@@ -26,6 +31,7 @@ export default class SinglePlayView extends View {
 	}
 
 	hidePreload(){
+		console.log("multiplayerView hidePreload");
 		setTimeout(() => {
 			console.log('lololol');
 			this.preload.setHide(preloader);
@@ -33,13 +39,17 @@ export default class SinglePlayView extends View {
 	}
 
 	goBack(){
+		console.log("multiplayerView goBack");
 		this.game.stopAnimation();
+		this.game.finishConnection();
+		this.game.initPointerLock();
 		this.hide();
 		this.user.backgroundView.resume();
 		this.router.go('/app');
 	}
 
 	rego(){
+		console.log("multiplayerView rego");
 		this.game.stopAnimation();
 		this.game.init(this.getElement(), this.goBack.bind(this), this.rego.bind(this));
 		this.game.animate();
